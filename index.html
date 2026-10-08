@@ -1,12 +1,94 @@
-function updateUI() {
+lance-display">$0</h2>
+        <p style="margin: 3px 0 0 0; font-size: 13px; color: #34c759;">Пассивный доход: +$<span id="income-display">0</span>/сек</p>
+    </div>
+
+    <!-- Главные действия -->
+    <button class="main-btn work-btn" id="btn-work" onclick="earnClick()">💼 Работать в офисе (+$1)</button>
+    <button class="main-btn sleep-btn" onclick="sleep()">🛌 Поспать дома (+40% Энергии)</button>
+
+    <div class="section-title">🍕 Магазин еды</div>
+    <div class="item-card">
+        <div class="item-info">
+            <div class="item-name">🌯 Сочная Шаурма</div>
+            <div class="item-desc">+25% к сытости</div>
+        </div>
+        <button class="buy-btn" onclick="buyFood(15, 25)">$15</button>
+    </div>
+    <div class="item-card">
+        <div class="item-info">
+            <div class="item-name">🥩 Премиум Стейк</div>
+            <div class="item-desc">+70% к сытости</div>
+        </div>
+        <button class="buy-btn" onclick="buyFood(50, 70)">$50</button>
+    </div>
+
+    <div class="section-title">🏢 Источники дохода (Бизнес)</div>
+    <div class="item-card">
+        <div class="item-info">
+            <div class="item-name">☕ Кофейная будка</div>
+            <div class="item-desc">Доход: +$2/сек | У тебя: <span id="count-cafe">0</span></div>
+        </div>
+        <button class="buy-btn" id="btn-cafe" onclick="buyBusiness('cafe', 120, 2)">$120</button>
+    </div>
+    <div class="item-card">
+        <div class="item-info">
+            <div class="item-name">🛒 Сеть супермаркетов</div>
+            <div class="item-desc">Доход: +$18/сек | У тебя: <span id="count-shop">0</span></div>
+        </div>
+        <button class="buy-btn" id="btn-shop" onclick="buyBusiness('shop', 900, 18)">$900</button>
+    </div>
+
+    <div class="section-title">🚗 Автосалон</div>
+    <div class="item-card">
+        <div class="item-info">
+            <div class="item-name">🚗 Дрифтовая Жига</div>
+            <div class="item-desc" id="status-car1">Не куплено</div>
+        </div>
+        <button class="buy-btn" id="btn-car1" onclick="buyAsset('car1', 400)">$400</button>
+    </div>
+    <div class="item-card">
+        <div class="item-info">
+            <div class="item-name">🏎 Спортивная Bugatti</div>
+            <div class="item-desc" id="status-car2">Не куплено</div>
+        </div>
+        <button class="buy-btn" id="btn-car2" onclick="buyAsset('car2', 8000)">$8000</button>
+    </div>
+
+    <div class="section-title">🏠 Недвижимость</div>
+    <div class="item-card">
+        <div class="item-info">
+            <div class="item-name">🏢 Уютная Студия</div>
+            <div class="item-desc" id="status-house1">Не куплено</div>
+        </div>
+        <button class="buy-btn" id="btn-house1" onclick="buyAsset('house1', 2500)">$2500</button>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            document.getElementById('user-greeting').innerText = Привет, ${tg.initDataUnsafe.user.first_name}!;
+        }
+
+        // Загрузка состояния
+        let gameState = JSON.parse(localStorage.getItem('life_sim_v2')) || {
+            balance: 50, // Стартовые деньги
+            income: 0,
+            hunger: 100,
+            energy: 100,
+            businesses: { cafe: 0, shop: 0 },
+            assets: { car1: false, car2: false, house1: false }
+        };
+
+        function updateUI() {
             // Ограничения шкал от 0 до 100
             gameState.hunger = Math.max(0, Math.min(100, gameState.hunger));
             gameState.energy = Math.max(0, Math.min(100, gameState.energy));
 
             document.getElementById('balance-display').innerText = $${gameState.balance};
             document.getElementById('income-display').innerText = gameState.income;
-            
-            // Обновление шкал
+// Обновление шкал
             document.getElementById('text-hunger').innerText = ${Math.floor(gameState.hunger)}%;
             document.getElementById('bar-hunger').style.width = ${gameState.hunger}%;
             document.getElementById('text-energy').innerText = ${Math.floor(gameState.energy)}%;
