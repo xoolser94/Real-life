@@ -1,290 +1,43 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Симулятор Жизни</title>
-    <!-- Подключение Telegram Web App API -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        :root {
-            --tg-theme-bg-color: #182533;
-            --tg-theme-text-color: #ffffff;
-            --tg-theme-button-color: #2f6ea5;
-            --tg-theme-button-text-color: #ffffff;
-            --tg-theme-hint-color: #7d8b99;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--tg-theme-bg-color);
-            color: var(--tg-theme-text-color);
-            margin: 0;
-            padding: 16px;
-            user-select: none;
-            -webkit-user-select: none;
-        }
+function updateUI() {
+            // Ограничения шкал от 0 до 100
+            gameState.hunger = Math.max(0, Math.min(100, gameState.hunger));
+            gameState.energy = Math.max(0, Math.min(100, gameState.energy));
 
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            background: rgba(255,255,255,0.05);
-            padding: 12px;
-            border-radius: 12px;
-        }
-
-        .username {
-            font-weight: bold;
-            color: var(--tg-theme-button-color);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
-            background: rgba(255,255,255,0.08);
-            padding: 12px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .stat-val {
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 4px;
-        }
-
-        .nav-tabs {
-            display: flex;
-            gap: 5px;
-            margin-bottom: 15px;
-        }
-
-        .tab-btn {
-            flex: 1;
-            background: rgba(255,255,255,0.1);
-            border: none;
-            color: var(--tg-theme-hint-color);
-            padding: 10px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .tab-btn.active {
-            background: var(--tg-theme-button-color);
-            color: var(--tg-theme-button-text-color);
-        }
-
-        .panel {
-            display: none;
-            background: rgba(255,255,255,0.03);
-            border-radius: 12px;
-            padding: 15px;
-            min-height: 200px;
-        }
-
-        .panel.active {
-            display: block;
-        }
-
-        .item-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .item-row:last-child {
-            border-bottom: none;
-        }
-
-        .action-btn {
-            background: var(--tg-theme-button-color);
-            color: var(--tg-theme-button-text-color);
-            border: none;
-            padding: 8px 14px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .action-btn:disabled {
-            background: #444;
-            color: #888;
-            cursor: not-allowed;
-        }
-
-        .logs {
-            margin-top: 15px;
-            font-size: 12px;
-            color: var(--tg-theme-hint-color);
-            max-height: 60px;
-            overflow-y: auto;
-            text-align: center;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="header">
-        Привет, <span id="username" class="username">Игрок</span>! Добро пожаловать в Симулятор Жизни.
-    </div>
-
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div>💵 Баланс</div>
-            <div id="balance" class="stat-val">$100</div>
-        </div>
-        <div class="stat-card">
-            <div>⏱ Пассивный доход</div>
-            <div id="income" class="stat-val">$0/сек</div>
-        </div>
-    </div>
-
-    <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('work')">💼 Работа</button>
-        <button class="tab-btn" onclick="switchTab('business')">🏢 Бизнес</button>
-        <button class="tab-btn" onclick="switchTab('garage')">🚗 Гараж</button>
-    </div>
-
-    <!-- Вкладка РАБОТА -->
-    <div id="work-panel" class="panel active">
-        <div style="text-align:center; padding: 20px 0;">
-            <button class="action-btn" style="padding: 15px 30px; font-size: 16px;" onclick="clickWork()">👋 Работать руками (+$1)</button>
-        </div>
-    </div>
-
-    <!-- Вкладка БИЗНЕС -->
-    <div id="business-panel" class="panel">
-        <div class="item-row">
-            <div>
-                <strong>☕️ Кофейня</strong><br>
-                <small>Доход: +$1/сек. Цена: $50</small>
-            </div>
-            <button id="buy-cafe" class="action-btn" onclick="buyAsset('cafe', 50, 1)">Купить</button>
-        </div>
-        <div class="item-row">
-            <div>
-                <strong>🛒 Супермаркет</strong><br>
-                <small>Доход: +$5/сек. Цена: $250</small>
-            </div>
-            <button id="buy-shop" class="action-btn" onclick="buyAsset('shop', 250, 5)">Купить</button>
-        </div>
-    </div>
-
-    <!-- Вкладка ГАРАЖ -->
-    <div id="garage-panel" class="panel">
-        <div class="item-row">
-            <div>
-                <strong>🚲 Велосипед</strong><br>
-                <small>Престиж. Цена: $30</small>
-            </div>
-            <button id="buy-bike" class="action-btn" onclick="buyItem('bike', 30, 'Велосипед')">Купить</button>
-        </div>
-        <div class="item-row">
-            <div>
-                <strong>🚗 Подержанное авто</strong><br>
-                <small>Престиж. Цена: $150</small>
-            </div>
-            <button id="buy-car" class="action-btn" onclick="buyItem('car', 150, 'Автомобиль')">Купить</button>
-        </div>
-    </div>
-
-    <div id="logs" class="logs">Игра началась! Развивайся.</div>
-
-    <script>
-        // Инициализация Telegram Web App
-        const tg = window.Telegram.WebApp;
-        tg.expand(); // Расширяем на весь экран
-
-        // Отображение имени пользователя из ТГ
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name;
-        }
-
-        // Состояние игры (сохраняется в localStorage)
-        let gameState = JSON.parse(localStorage.getItem('tg_life_sim_state')) || {
-            balance: 100,
-            income: 0,
-            inventory: []
-        };
-
-        function updateUI() {
-            document.getElementById('balance').innerText = '$' + gameState.balance;
-            document.getElementById('income').innerText = '$' + gameState.income + '/сек';
+            document.getElementById('balance-display').innerText = $${gameState.balance};
+            document.getElementById('income-display').innerText = gameState.income;
             
-            // Проверка доступности кнопок по деньгам
-            document.getElementById('buy-cafe').disabled = gameState.balance < 50;
-            document.getElementById('buy-shop').disabled = gameState.balance < 250;
-            
-            if (gameState.inventory.includes('bike')) {
-                document.getElementById('buy-bike').innerText = 'В гараже';
-                document.getElementById('buy-bike').disabled = true;
-            } else {
-                document.getElementById('buy-bike').disabled = gameState.balance < 30;
-            }
+            // Обновление шкал
+            document.getElementById('text-hunger').innerText = ${Math.floor(gameState.hunger)}%;
+            document.getElementById('bar-hunger').style.width = ${gameState.hunger}%;
+            document.getElementById('text-energy').innerText = ${Math.floor(gameState.energy)}%;
+            document.getElementById('bar-energy').style.width = ${gameState.energy}%;
 
-            if (gameState.inventory.includes('car')) {
-                document.getElementById('buy-car').innerText = 'В гараже';
-                document.getElementById('buy-car').disabled = true;
-            } else {
-                document.getElementById('buy-car').disabled = gameState.balance < 150;
-            }
+            // Бизнес
+            document.getElementById('count-cafe').innerText = gameState.businesses.cafe;
+            document.getElementById('count-shop').innerText = gameState.businesses.shop;
 
-            localStorage.setItem('tg_life_sim_state', JSON.stringify(gameState));
+            // Блокировка работы при голоде/усталости
+            document.getElementById('btn-work').disabled = (gameState.hunger <= 5 || gameState.energy <= 5);
+
+            // Имущество кнопки
+            updateAssetButton('car1', 'btn-car1', 'status-car1', 'В гараже');
+            updateAssetButton('car2', 'btn-car2', 'status-car2', 'В гараже');
+            updateAssetButton('house1', 'btn-house1', 'status-house1', 'Куплено');
+
+            localStorage.setItem('life_sim_v2', JSON.stringify(gameState));
         }
 
-        function log(message) {
-            document.getElementById('logs').innerText = message;
+        function updateAssetButton(key, btnId, statusId, successTxt) {
+            const bought = gameState.assets[key];
+            document.getElementById(statusId).innerText = bought ? 'Куплено ✔' : 'Не куплено';
+            document.getElementById(btnId).disabled = bought;
+            if(bought) document.getElementById(btnId).innerText = successTxt;
         }
 
-        function clickWork() {
-            gameState.balance += 1;
-            updateUI();
-        }
-
-        function buyAsset(id, price, incomePlus) {
-            if (gameState.balance >= price) {
-                gameState.balance -= price;
-                gameState.income += incomePlus;
-                log('Вы открыли бизнес!');
+        // Клики (Работа)
+        function earnClick() {
+            if (gameState.hunger > 5 && gameState.energy > 5) {
+                gameState.balance += 1;
+                gameState.hunger -= 1.2; // Тратим голод при клике
+                gameState.energy -= 1.5; // Тратим энергию
                 updateUI();
-            }
-        }
-
-        function buyItem(id, price, name) {
-            if (gameState.balance >= price && !gameState.inventory.includes(id)) {
-                gameState.balance -= price;
-                gameState.inventory.push(id);
-                log('Куплено имущество: ' + name);
-                updateUI();
-            }
-        }
-
-        function switchTab(tab) {
-            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            
-            document.getElementById(tab + '-panel').classList.add('active');
-            event.currentTarget.classList.add('active');
-        }
-
-        // Каждую секунду начисляем доход
-        setInterval(() => {
-            if (gameState.income > 0) {
-                gameState.balance += gameState.income;
-                updateUI();
-            }
-        }, 1000);
-
-        // Первый запуск интерфейса
-        updateUI();
-    </script>
-</body>
-</html>
