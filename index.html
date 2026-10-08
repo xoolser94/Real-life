@@ -3,61 +3,289 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Симулятор Жизни</title>
+    <title>Реальная Жизнь Симулятор</title>
     <script src="https://telegram.org"></script>
     <style>
-        :root { --bg: #0b0b0e; --card: #14141c; --dark: #0f0f14; --green: #00e676; --cyan: #00e5ff; --purple: #d500f9; --yellow: #ffd60a; --red: #ff1744; --text: #ffffff; --sub: #7b7b8c; --border: #222232; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; user-select: none; padding-bottom: 90px; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: rgba(20,20,28,0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border); z-index: 1000; }
-        .nav-btn { background: none; border: none; color: var(--sub); font-size: 11px; display: flex; flex-direction: column; align-items: center; cursor: pointer; width: 16%; }
-        .nav-btn.active { color: var(--cyan); }
-        .nav-btn span { font-size: 18px; margin-bottom: 2px; }
-        .screen { display: none; } .screen.active { display: block; }
-        .header-status { background: var(--card); border-radius: 14px; padding: 12px; margin-bottom: 10px; border: 1px solid var(--border); }
-        .user-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .lvl-badge { background: linear-gradient(135deg, var(--purple), #651fff); padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; }
-        .bars-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
-        .bar-wrap { background: var(--dark); padding: 6px; border-radius: 8px; }
-        .bar-label { font-size: 10px; color: var(--sub); margin-bottom: 3px; display: flex; justify-content: space-between; }
-        .bar-outer { background: #222; height: 6px; border-radius: 3px; overflow: hidden; }
-        .bar-inner { height: 100%; width: 100%; transition: width 0.3s; }
-        .balance-giant { font-size: 32px; font-weight: 800; color: var(--yellow); margin: 10px 0 2px; text-shadow: 0 0 10px rgba(255,214,10,0.1); }
-        .sub-income { font-size: 12px; color: var(--green); margin-bottom: 12px; }
-        .section-title { text-align: left; font-size: 12px; font-weight: bold; color: var(--sub); text-transform: uppercase; letter-spacing: 0.5px; margin: 15px 5px 8px; }
-        .card-item { background: var(--card); border-radius: 12px; padding: 10px 14px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); }
-        .card-details { text-align: left; max-width: 65%; }
-        .card-title { font-weight: 600; font-size: 14px; }
-        .card-desc { font-size: 11px; color: var(--sub); }
-        .action-btn { background: var(--cyan); border: none; color: #000; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer; }
-        .action-btn:disabled { background: #2a2a35; color: var(--sub); cursor: not-allowed; }
-        .click-area { background: radial-gradient(circle, #1a1a26 0%, #111118 100%); border: 2px solid var(--border); height: 140px; border-radius: 16px; display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 15px 0; cursor: pointer; }
-        .click-area:active { transform: scale(0.98); border-color: var(--cyan); }
-        .alert-box { background: rgba(255,23,68,0.1); border: 1px solid var(--red); color: #ff5252; padding: 8px; border-radius: 8px; font-size: 11px; margin-bottom: 10px; display: none; text-align: left; }
-        .input-group { display: flex; gap: 6px; margin-top: 6px; width: 100%; }
-        .custom-input { background: var(--dark); border: 1px solid var(--border); border-radius: 6px; color: #fff; padding: 6px; font-size: 12px; flex-grow: 1; outline: none; }
-        .casino-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .casino-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 10px; }
-        .game-table { background: #0a2f1d; border: 3px solid #5d4037; border-radius: 8px; padding: 8px; margin-top: 6px; min-height: 60px; display: flex; flex-direction: column; justify-content: center; font-size: 12px; }
+        :root {
+            --bg-main: #0b0b0e;
+            --bg-card: #14141c;
+            --bg-darker: #0f0f14;
+            --accent-green: #00e676;
+            --accent-cyan: #00e5ff;
+            --accent-purple: #d500f9;
+            --accent-yellow: #ffd60a;
+            --accent-red: #ff1744;
+            --text-main: #ffffff;
+            --text-sub: #7b7b8c;
+            --border-neon: #222232;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            margin: 0;
+            padding: 10px;
+            user-select: none;
+            overflow-x: hidden;
+            padding-bottom: 90px;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            height: 70px;
+            background: #14141c;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid var(--border-neon);
+            z-index: 9999;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            color: var(--text-sub);
+            font-size: 11px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            width: 16%;
+            padding: 5px 0;
+        }
+
+        .nav-btn.active {
+            color: var(--accent-cyan);
+            font-weight: bold;
+        }
+
+        .nav-btn span {
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .header-status {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border-neon);
+        }
+
+        .user-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .lvl-badge {
+            background: linear-gradient(135deg, var(--accent-purple), #651fff);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .bars-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .bar-wrap {
+            background: var(--bg-darker);
+            padding: 8px;
+            border-radius: 10px;
+        }
+
+        .bar-label {
+            font-size: 11px;
+            color: var(--text-sub);
+            margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .bar-outer {
+            background: #222;
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .bar-inner {
+            height: 100%;
+            width: 100%;
+            transition: width 0.3s;
+        }
+
+        .balance-giant {
+            font-size: 34px;
+            font-weight: 800;
+            color: var(--accent-yellow);
+            margin: 15px 0 5px;
+        }
+
+        .sub-income {
+            font-size: 12px;
+            color: var(--accent-green);
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            text-align: left;
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 20px 5px 10px;
+        }
+
+        .card-item {
+            background: var(--bg-card);
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border-neon);
+        }
+
+        .card-details {
+            text-align: left;
+            max-width: 65%;
+        }
+
+        .card-title {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 2px;
+        }
+
+        .card-desc {
+            font-size: 12px;
+            color: var(--text-sub);
+        }
+
+        .action-btn {
+            background: var(--accent-cyan);
+            border: none;
+            color: #000;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .action-btn:disabled {
+            background: #2a2a35;
+            color: var(--text-sub);
+        }
+
+        .giant-click-area {
+            background: radial-gradient(circle, #1a1a26 0%, #111118 100%);
+            border: 2px solid var(--border-neon);
+            height: 160px;
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            cursor: pointer;
+        }
+
+        .alert-box {
+            background: rgba(255, 23, 68, 0.1);
+            border: 1px solid var(--accent-red);
+            color: #ff5252;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            margin-bottom: 12px;
+            display: none;
+            text-align: left;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            width: 100%;
+        }
+
+        .custom-input {
+            background: var(--bg-darker);
+            border: 1px solid var(--border-neon);
+            border-radius: 8px;
+            color: #fff;
+            padding: 8px;
+            font-size: 13px;
+            flex-grow: 1;
+            outline: none;
+        }
+
+        .casino-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .casino-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-neon);
+            border-radius: 16px;
+            padding: 15px;
+        }
+
+        .game-table {
+            background: #0a2f1d;
+            border: 4px solid #5d4037;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 10px;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            font-size: 13px;
+        }
     </style>
 </head>
 <body>
 
-    <div id="crisis-alert" class="alert-box" style="color:var(--yellow); border-color:var(--yellow);">⚠️ <b>Кризис!</b> Доходы бизнеса урезаны на 40%. Ограничение: <span id="crisis-timer">20:00</span></div>
-    <div id="debt-alert" class="alert-box">🚨 <b>Штраф кредита!</b> Баланс изъят. Доходы снижены на 25%. Штраф: <span id="debt-timer">25:00</span></div>
+    <div id="crisis-alert" class="alert-box" style="color:var(--accent-yellow); border-color:var(--accent-yellow);">⚠️ <b>Финансовый кризис!</b> Доход бизнесов снижен на 40%. Осталось: <span id="crisis-timer">20:00</span></div>
+    <div id="debt-alert" class="alert-box">🚨 <b>Штраф кредита!</b> Доходы урезаны на 25%. Осталось: <span id="debt-timer">25:00</span></div>
 
     <div class="header-status">
         <div class="user-row">
             <div style="text-align: left;">
-                <div id="player-name" style="font-weight: bold; font-size: 15px;">Игрок</div>
-                <div id="player-job" style="font-size: 11px; color: var(--sub);">Безработный</div>
+                <div id="player-name" style="font-weight: bold; font-size: 16px;">Игрок</div>
+                <div id="player-job" style="font-size: 12px; color: var(--text-sub);">Безработный</div>
             </div>
             <div class="lvl-badge"><span id="player-lvl">1</span> LVL</div>
         </div>
-        <div class="bar-outer"><div id="exp-bar" class="bar-inner" style="width: 0%; background: var(--purple);"></div></div>
+        <div class="bar-outer"><div id="exp-bar" class="bar-inner" style="width: 0%; background: var(--accent-purple);"></div></div>
         <div class="bars-grid">
             <div class="bar-wrap">
                 <div class="bar-label"><span>🍔 Сытость</span><span id="lbl-hunger">100%</span></div>
-                <div class="bar-outer"><div id="fill-hunger" class="bar-inner" style="background: var(--green);"></div></div>
+                <div class="bar-outer"><div id="fill-hunger" class="bar-inner" style="background: var(--accent-green);"></div></div>
             </div>
             <div class="bar-wrap">
                 <div class="bar-label"><span>💧 Гидрация</span><span id="lbl-thirst">100%</span></div>
@@ -66,62 +294,186 @@
         </div>
     </div>
 
-    <!-- МЕЙН ЭКРАН -->
+    <!-- ЭКРАН 1: ГЛАВНАЯ -->
     <div id="screen-main" class="screen active">
         <div class="balance-giant" id="main-balance">$50,000</div>
-        <div class="sub-income">Доход: +$<span id="main-pps">0</span>/сек</div>
-        <div class="click-area" onclick="handleTap()">
-            <span style="font-size: 36px; margin-bottom: 4px;">💼</span>
-            <span style="font-weight: bold; font-size: 13px;">РАБОТАТЬ НА ТАРИФЕ</span>
-            <span id="tap-reward-desc" style="font-size: 11px; color: var(--cyan);">+$1 / клик</span>
+        <div class="sub-income">Пассивный доход: +$<span id="main-pps">0</span>/сек</div>
+
+        <div class="giant-click-area" onclick="handleTap()">
+            <span style="font-size: 42px; margin-bottom: 8px;">💼</span>
+            <span style="font-weight: bold;">РАБОТАТЬ НА ТАРИФЕ</span>
+            <span id="tap-reward-desc" style="font-size: 12px; color: var(--accent-cyan); margin-top: 4px;">+$1 за клик</span>
         </div>
-        <div class="section-title">Магазин Жизни</div>
+
+        <div class="section-title">Магазин Жизнеобеспечения</div>
         <div class="card-item">
-            <div class="card-details"><div class="card-title">🍔 Фастфуд Комбо</div><div class="card-desc">+40% Сытости | +10% Жажды</div></div>
+            <div class="card-details">
+                <div class="card-title">🍔 Комбо-набор фастфуда</div>
+                <div class="card-desc">+40% Сытость | +10% Жажда</div>
+            </div>
             <button class="action-btn" onclick="buySurvival('food', 45)">$45</button>
         </div>
         <div class="card-item">
-            <div class="card-details"><div class="card-title">💧 Чистая Вода</div><div class="card-desc">+60% Гидрации</div></div>
+            <div class="card-details">
+                <div class="card-title">💧 Минеральная вода</div>
+                <div class="card-desc">+60% Жажда</div>
+            </div>
             <button class="action-btn" onclick="buySurvival('water', 20)">$20</button>
         </div>
     </div>
 
-    <!-- РАБОТА -->
-    <div id="screen-jobs" class="screen"><div class="section-title">Список Профессий</div><div id="jobs-list"></div></div>
-
-    <!-- БИЗНЕС -->
-    <div id="screen-business" class="screen">
-        <div class="section-title">25 Дорогих Бизнесов</div><div id="business-list" style="max-height: 250px; overflow-y: scroll; border: 1px solid var(--border); border-radius: 8px; padding: 4px;"></div>
-        <div class="section-title">📊 Арендный бизнес (Управление прокатом)</div>
-        <div class="card-item" style="flex-direction: column; align-items: stretch; gap: 8px;">
-            <div style="font-size: 11px; color: var(--sub);">Сдавайте свои авто в аренду. Налог государства: 13%</div>
-            <div id="rental-cabinet-view" style="background: var(--dark); padding: 8px; border-radius: 8px; font-size: 12px; text-align: left;">Нет машин для аренды. Купите их в автосалоне.</div>
-        </div>
+    <!-- ЭКРАН 2: РАБОТА -->
+    <div id="screen-jobs" class="screen">
+        <div class="section-title">Доступные профессии</div>
+        <div id="jobs-list"></div>
     </div>
 
-    <!-- ГАРАЖ -->
-    <div id="screen-garage" class="screen">
-        <div class="section-title">Категории Автосалона</div>
-        <div style="display: flex; gap: 4px; margin-bottom: 8px;">
-            <button class="action-btn" style="flex:1;" onclick="renderGarage('ru')">🇷🇺 РФ Авто</button>
-            <button class="action-btn" style="flex:1;" onclick="renderGarage('vag')">🇩🇪 VAG</button>
-            <button class="action-btn" style="flex:1;" onclick="renderGarage('lux')">💎 LUX</button>
-        </div>
-        <div id="garage-list"></div>
-    </div>
-
-    <!-- БАНК -->
-    <div id="screen-bank" class="screen">
-        <div class="section-title">🏦 Кредитование (Долг x10)</div>
-        <div class="card-item" style="flex-direction: column; align-items: stretch;">
-            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;"><span>Ваш долг:</span><span id="bank-debt-display" style="color:var(--red); font-weight:bold;">$0</span></div>
-            <div style="display: flex; gap: 6px;">
-                <button class="action-btn" style="flex:1; background: var(--green);" onclick="takeCredit()">Взять $10,000</button>
-                <button class="action-btn" style="flex:1; background: var(--yellow);" onclick="payCredit()">Выплатить $25,000</button>
-            </div>
-        </div>
-        <div class="section-title">💰 Вклады и Переводы (Комиссия 7%)</div>
-        <div class="card-item" style="flex-direction: column; align-items: stretch;">
-            <div style="font-size:12px; margin-bottom:4px;">На депозите: <span id="bank-deposit-display" style="color:var(--green); font-weight:bold;">$0</span></div>
-            <div class="input-group">
-                <input type="number" id="deposit-input" class="custom-input" placeholder="Сумма">
+    <!-- ЭКРАН 3: БИЗНЕС -->
+// Функция переключения экранов
+window.switchScreen = function(screenId, btn) {
+document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+const target = document.getElementById('screen-' + screenId);
+if(target) target.classList.add('active');
+if(btn) btn.classList.add('active');
+if(screenId === 'jobs') renderJobs();
+if(screenId === 'business') { renderBusinesses(); updateRentalCabinet(); }
+if(screenId === 'garage') renderGarage('ru');
+};
+const JOBS = [
+{ id: 'j1', name: 'Промоутер', lvl: 1, reward: 5 }, { id: 'j2', name: 'Курьер', lvl: 2, reward: 15 },
+{ id: 'j3', name: 'Бариста', lvl: 3, reward: 35 }, { id: 'j4', name: 'Такси Эконом', lvl: 5, reward: 80 },
+{ id: 'j5', name: 'Стажер IT', lvl: 7, reward: 180 }, { id: 'j6', name: 'Управляющий ПВЗ', lvl: 10, reward: 400 },
+{ id: 'j7', name: 'Тимлид IT', lvl: 15, reward: 1200 }
+];
+const BUSINESS_DATA = [
+{ id: 'b1', name: 'Вендинг кофе', cost: 150000, income: 45 }, { id: 'b2', name: 'Остров чехлов', cost: 350000, income: 110 },
+{ id: 'b3', name: 'Маникюр экспресс', cost: 750000, income: 260 }, { id: 'b4', name: 'Пекарня у дома', cost: 1400000, income: 550 },
+{ id: 'b5', name: 'Барбершоп', cost: 2800000, income: 1200 }, { id: 'b6', name: 'Техосмотр авто', cost: 4500000, income: 2100 },
+{ id: 'b7', name: 'Клуб CyberZone', cost: 7000000, income: 3600 }, { id: 'b8', name: 'Бутик одежды', cost: 11000000, income: 6000 },
+{ id: 'b9', name: 'Ресторан Азия', cost: 18000000, income: 10500 }, { id: 'b10', name: 'Автомойка Робот', cost: 26000000, income: 16000 },
+{ id: 'b11', name: 'Строительная фирма', cost: 40000000, income: 26000 }, { id: 'b12', name: 'Частный Детсад', cost: 60000000, income: 41000 },
+{ id: 'b13', name: 'Фитнес-клуб', cost: 90000000, income: 65000 }, { id: 'b14', name: 'Логистика хаб', cost: 140000000, income: 105000 },
+{ id: 'b15', name: 'Сеть аптек', cost: 220000000, income: 175000 }, { id: 'b16', name: 'Завод картона', cost: 350000000, income: 290000 },
+{ id: 'b17', name: 'Отель 4 звезды', cost: 550000000, income: 480000 }, { id: 'b18', name: 'МедКлиника VIP', cost: 850000000, income: 760000 },
+{ id: 'b19', name: 'Сеть АЗС Нефть', cost: 1300000000, income: 1200000 }, { id: 'b20', name: 'ТРЦ МегаГранд', cost: 2000000000, income: 1950000 },
+{ id: 'b21', name: 'Гранитный карьер', cost: 3200000000, income: 3200000 }, { id: 'b22', name: 'Авиакомпания', cost: 5000000000, income: 5300000 },
+{ id: 'b23', name: 'Гипермаркеты', cost: 8000000000, income: 8900000 }, { id: 'b24', name: 'НПЗ Завод', cost: 13000000000, income: 15000000 },
+{ id: 'b25', name: 'КосмоДром OrbitX', cost: 25000000000, income: 30000000 }
+];
+const CAR_NAMES = {
+ru: ['ВАЗ 2107', 'Лада Приора', 'Нива Урбан', 'Лада Веста Спорт', 'УАЗ Патриот', 'ГАЗ Волга'],
+vag: ['VW Golf 4', 'Skoda Octavia A7', 'VW Passat B8', 'Audi A4 B9', 'Porsche Cayenne'],
+lux: ['BMW M5 F90', 'Mercedes E63s', 'Rolls-Royce Ghost', 'Bentley GT', 'Lamborghini Aventador']
+};
+let AUTOMOBILES_POOL = [];
+function generateCarsPool() {
+let id = 1;
+['ru', 'vag', 'lux'].forEach(type => {
+let prices = { ru: 3000, vag: 45000, lux: 400000 };
+let step = { ru: 3000, vag: 15000, lux: 500000 };
+for(let i=0; i<34; i++) {
+let name = CAR_NAMES[type][i % CAR_NAMES[type].length] + ' V' + (i+1);
+AUTOMOBILES_POOL.push({ id: 'c_'+id, type: type, name: name, cost: prices[type] + (i * step[type]), num: generatePlate(type==='ru'?'RU':'777') });
+id++;
+}
+});
+}
+function generatePlate(reg) { const l = 'ABEKMHOPCTYX'; return ${l[Math.floor(Math.random()*12)]}${Math.floor(100+Math.random()*900)}${l[Math.floor(Math.random()*12)]}${l[Math.floor(Math.random()*12)]} | ${reg}; }
+let state = JSON.parse(localStorage.getItem('lifesim_v3_fixed')) || {
+balance: 50000, lvl: 1, exp: 0, hunger: 100, thirst: 100, currentJob: 'none',
+ownedBusinesses: {}, ownedCars: [], rentalPrices: {}, bankDebt: 0, bankDeposit: 0,
+crisisActive: false, crisisTimeLeft: 0, punishmentActive: false, punishmentTimeLeft: 0
+};
+generateCarsPool();
+window.updateUI = function() {
+state.hunger = Math.max(0, Math.min(100, state.hunger)); state.thirst = Math.max(0, Math.min(100, state.thirst));
+document.getElementById('main-balance').innerText = '$' + Math.floor(state.balance).toLocaleString();
+document.getElementById('player-lvl').innerText = state.lvl;
+document.getElementById('exp-bar').style.width = ${(state.exp / (state.lvl * 100)) * 100}%;
+document.getElementById('lbl-hunger').innerText = ${Math.floor(state.hunger)}%;
+document.getElementById('fill-hunger').style.width = ${state.hunger}%;
+document.getElementById('lbl-thirst').innerText = ${Math.floor(state.thirst)}%;
+document.getElementById('fill-thirst').style.width = ${state.thirst}%;
+let pps = 0;
+BUSINESS_DATA.forEach(b => { pps += b.income * (state.ownedBusinesses[b.id] || 0); });
+state.ownedCars.forEach(c => {
+let rent = state.rentalPrices[c.id] || 0;
+if(rent > 0) { pps += ((rent * 0.87) / 100); }
+});
+if (state.crisisActive) pps *= 0.6; if (state.punishmentActive) pps *= 0.75;
+document.getElementById('main-pps').innerText = Math.floor(pps * 10).toLocaleString();
+let jObj = JOBS.find(j => j.id === state.currentJob);
+document.getElementById('player-job').innerText = jObj ? jObj.name : 'Безработный';
+document.getElementById('tap-reward-desc').innerText = +$${jObj ? jObj.reward : 1} за клик;
+document.getElementById('bank-debt-display').innerText = '$' + state.bankDebt.toLocaleString();
+document.getElementById('bank-deposit-display').innerText = '$' + state.bankDeposit.toLocaleString();
+document.getElementById('crisis-alert').style.display = state.crisisActive ? 'block' : 'none';
+document.getElementById('debt-alert').style.display = state.punishmentActive ? 'block' : 'none';
+localStorage.setItem('lifesim_v3_fixed', JSON.stringify(state));
+};
+window.handleTap = function() {
+if(state.hunger <= 3 || state.thirst <= 3) { alert('Вы истощены! Поешьте!'); return; }
+let jObj = JOBS.find(j => j.id === state.currentJob);
+state.balance += jObj ? jObj.reward : 1; state.hunger -= 0.4; state.thirst -= 0.6; state.exp += 2;
+if(state.exp >= state.lvl * 100) { state.exp -= state.lvl * 100; state.lvl++; alert(Новый уровень: ${state.lvl}!); }
+updateUI();
+};
+window.buySurvival = function(type, cost) {
+if(state.balance >= cost) { state.balance -= cost; if(type === 'food') { state.hunger += 40; state.thirst += 10; } else { state.thirst += 60; } updateUI(); } else { alert('Нет денег!'); }
+};
+window.renderJobs = function() {
+let html = ''; JOBS.forEach(j => {
+let act = state.currentJob === j.id, lock = state.lvl < j.lvl;
+html += <div class="card-item"><div class="card-details"><div class="card-title">${j.name}</div><div class="card-desc">Доход: $${j.reward}/клик | Нужен LVL: ${j.lvl}</div></div><button class="action-btn" ${lock?'disabled':''} onclick="workJob('${j.id}')">${act?'Работаете':'Вступить'}</button></div>;
+}); document.getElementById('jobs-list').innerHTML = html;
+};
+window.workJob = function(id) { state.currentJob = id; renderJobs(); updateUI(); };
+window.renderBusinesses = function() {
+let html = ''; BUSINESS_DATA.forEach(b => {
+html += <div class="card-item"><div class="card-details"><div class="card-title">${b.name} (${state.ownedBusinesses[b.id]||0} шт)</div><div class="card-desc">Цена: $${b.cost.toLocaleString()} | Доход: +$${b.income}/с</div></div><button class="action-btn" onclick="buyBiz('${b.id}', ${b.cost})">Купить</button></div>;
+}); document.getElementById('business-list').innerHTML = html;
+};
+window.buyBiz = function(id, cost) { if(state.balance >= cost) { state.balance -= cost; state.ownedBusinesses[id] = (state.ownedBusinesses[id] || 0) + 1; renderBusinesses(); updateUI(); } else { alert('Мало денег!'); } };
+window.updateRentalCabinet = function() {
+let view = document.getElementById('rental-cabinet-view'); if(state.ownedCars.length === 0) return; view.innerHTML = '';
+state.ownedCars.forEach(c => {
+view.innerHTML += <div style="margin-bottom:8px; border-bottom:1px solid #333; padding-bottom:4px;"><b>${c.name}</b><div class="input-group"><input type="number" id="rent-in-${c.id}" class="custom-input" value="${state.rentalPrices[c.id]||0}"><button class="action-btn" onclick="setCarRent('${c.id}')">Тариф</button></div></div>;
+});
+};
+window.setCarRent = function(id) { state.rentalPrices[id] = parseInt(document.getElementById(rent-in-${id}).value) || 0; alert('Тариф обновлен!'); updateUI(); };
+window.renderGarage = function(type) {
+let html = ''; AUTOMOBILES_POOL.filter(c => c.type === type).forEach(c => {
+let has = state.ownedCars.some(oc => oc.id === c.id);
+html += <div class="card-item"><div class="card-details"><div class="card-title">${c.name}</div><div class="card-desc">${c.num}<br>Цена: $${c.cost.toLocaleString()}</div></div><button class="action-btn" ${has?'disabled':''} onclick="buyCar('${c.id}')">${has?'Куплено':'Купить'}</button></div>;
+}); document.getElementById('garage-list').innerHTML = html;
+};
+window.buyCar = function(id) { let c = AUTOMOBILES_POOL.find(x => x.id === id); if(state.balance >= c.cost) { state.balance -= c.cost; state.ownedCars.push(c); renderGarage(c.type); updateUI(); } else { alert('Мало денег!'); } };
+window.takeCredit = function() { if(state.bankDebt > 0) return; state.balance += 10000; state.bankDebt = 100000; state.punishmentActive = false; updateUI(); alert('Взят долг $100,000!'); };
+window.payCredit = function() { if(state.balance >= 25000 && state.bankDebt > 0) { state.balance -= 25000; state.bankDebt -= 25000; if(state.bankDebt <= 0) state.punishmentActive = false; updateUI(); } };
+window.handleDeposit = function() { let a = parseInt(document.getElementById('deposit-input').value)||0; if(a>0 && state.balance>=a){ state.balance-=a; state.bankDeposit+=a; updateUI(); } };
+window.handleWithdraw = function() { let a = parseInt(document.getElementById('deposit-input').value)||0; if(a>0 && state.bankDeposit>=a){ state.bankDeposit-=a; state.balance+=a; updateUI(); } };
+window.executeTransfer = function() { let t = document.getElementById('transfer-target').value, a = parseInt(document.getElementById('transfer-amount').value)||0; if(a>0 && state.balance >= (a1.07)) { state.balance -= (a1.07); alert('Успешно переведено с комиссией 7%!'); updateUI(); } };
+window.inviteFriend = function() { state.balance += 12000; updateUI(); alert('Бонус за друга +$12,000 фикс!'); };
+window.playBlackjack = function() {
+if(state.balance < 500) return; state.balance -= 500;
+let p = Math.floor(13 + Math.random()*8), d = Math.floor(15 + Math.random()*7), tbl = document.getElementById('bj-table');
+if(p > 21) tbl.innerHTML = Проигрыш. У вас ${p};
+else if(d > 21 || p > d) { state.balance += 1200; tbl.innerHTML = Победа! Вы: ${p}, Дилер: ${d}; }
+else { tbl.innerHTML = Проиграли. Вы: ${p}, Дилер: ${d}; } updateUI();
+};
+window.playDice = function() {
+let b = parseInt(document.getElementById('dice-bet').value)||0; if(b<=0 || state.balance<b) return; state.balance -= b;
+let p = Math.floor(2 + Math.random()*11), c = Math.floor(2 + Math.random()11), tbl = document.getElementById('dice-table');
+if(p > c) { state.balance += b2; tbl.innerHTML = Победа! 🎲 ${p} > ${c}; }
+else { tbl.innerHTML = Проигрыш. 🎲 ${p} < ${c}; } updateUI();
+};
+setInterval(() => {
+state.hunger = Math.max(0, state.hunger - 0.08); state.thirst = Math.max(0, state.thirst - 0.12);
+if(state.bankDebt > 0) { if(state.balance >= 150) { state.balance -= 150; state.bankDebt = Math.max(0, state.bankDebt - 100); } else if(!state.punishmentActive) { state.punishmentActive = true; state.punishmentTimeLeft = 1500; } }
+if(state.punishmentActive) { state.punishmentTimeLeft--; if(state.punishmentTimeLeft <= 0) state.punishmentActive = false; }
+if(state.crisisActive) { state.crisisTimeLeft--; if(state.crisisTimeLeft <= 0) state.crisisActive = false; } else if(Math.random() < 0.001) { state.crisisActive = true; state.crisisTimeLeft = 1200; }
+if(state.bankDeposit > 0) state.bankDeposit += (state.bankDeposit * 0.0005);
+updateUI();
+}, 1000);
+updateUI();
