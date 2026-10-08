@@ -1,8 +1,116 @@
-lance-display">$0</h2>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Реальная Жизнь Симулятор</title>
+    <script src="https://telegram.org"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #151517;
+            color: #ffffff;
+            margin: 0;
+            padding: 15px;
+            text-align: center;
+            user-select: none;
+        }
+        h1 { color: #34c759; margin: 10px 0 5px; font-size: 26px; }
+        .username { color: #007aff; font-weight: bold; margin-bottom: 15px; font-size: 16px; }
+        
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            background: #222224;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+        .stat-box { width: 48%; text-align: left; }
+        .stat-label { font-size: 13px; color: #aeaeae; margin-bottom: 4px; display: flex; justify-content: space-between; }
+        .bar-bg { background: #3a3a3c; width: 100%; height: 8px; border-radius: 4px; overflow: hidden; }
+        .bar-fill { height: 100%; width: 100%; transition: width 0.3s, background-color 0.3s; }
+        .fill-hunger { background-color: #ff9500; }
+        .fill-energy { background-color: #af52de; }
+
+        .balance-card {
+            background: linear-gradient(135deg, #2c2c2e, #1c1c1e);
+            padding: 18px;
+            border-radius: 16px;
+            margin-bottom: 15px;
+            border: 1px solid #3a3a3c;
+        }
+        .balance-card h2 { margin: 5px 0; font-size: 32px; color: #ffd60a; font-weight: 800; }
+        
+        .main-btn {
+            border: none;
+            color: white;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px;
+            transition: transform 0.1s;
+        }
+        .work-btn { background: linear-gradient(135deg, #34c759, #24963e); box-shadow: 0 4px 12px rgba(52,199,89,0.3); }
+        .sleep-btn { background: linear-gradient(135deg, #5856d6, #403e99); }
+        .main-btn:active { transform: scale(0.98); }
+        .main-btn:disabled { background: #3a3a3c !important; color: #8e8e93; box-shadow: none; cursor: not-allowed; }
+
+        .section-title { text-align: left; margin: 20px 5px 10px; font-size: 16px; font-weight: bold; color: #8e8e93; text-transform: uppercase; letter-spacing: 0.5px; }
+        .item-card {
+            background: #222224;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 14px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            border: 1px solid #2c2c2e;
+        }
+        .item-info { text-align: left; }
+        .item-name { font-weight: 600; font-size: 15px; }
+        .item-desc { font-size: 12px; color: #8e8e93; margin-top: 2px; }
+        .buy-btn {
+            background-color: #007aff;
+            border: none;
+            color: white;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .buy-btn:disabled { background-color: #3a3a3c; color: #8e8e93; }
+    </style>
+</head>
+<body>
+
+    <h1>Реальная Жизнь</h1>
+    <div class="username" id="user-greeting">Привет, Игрок!</div>
+
+    <div class="stats-container">
+        <div class="stat-box">
+            <div class="stat-label">🍔 Сытость: <span id="text-hunger">100%</span></div>
+            <div class="bar-bg"><div id="bar-hunger" class="bar-fill fill-hunger"></div></div>
+Telegram
+Telegram – a new era of messaging
+Fast. Secure. Powerful.
+</div>
+        <div class="stat-box">
+            <div class="stat-label">⚡ Энергия: <span id="text-energy">100%</span></div>
+            <div class="bar-bg"><div id="bar-energy" class="bar-fill fill-energy"></div></div>
+        </div>
+    </div>
+
+    <div class="balance-card">
+        <p style="margin: 0; font-size: 13px; color: #aeaeae;">Твой капитал</p>
+        <h2 id="balance-display">$0</h2>
         <p style="margin: 3px 0 0 0; font-size: 13px; color: #34c759;">Пассивный доход: +$<span id="income-display">0</span>/сек</p>
     </div>
 
-    <!-- Главные действия -->
     <button class="main-btn work-btn" id="btn-work" onclick="earnClick()">💼 Работать в офисе (+$1)</button>
     <button class="main-btn sleep-btn" onclick="sleep()">🛌 Поспать дома (+40% Энергии)</button>
 
@@ -71,9 +179,8 @@ lance-display">$0</h2>
             document.getElementById('user-greeting').innerText = Привет, ${tg.initDataUnsafe.user.first_name}!;
         }
 
-        // Загрузка состояния
         let gameState = JSON.parse(localStorage.getItem('life_sim_v2')) || {
-            balance: 50, // Стартовые деньги
+            balance: 50,
             income: 0,
             hunger: 100,
             energy: 100,
@@ -82,26 +189,21 @@ lance-display">$0</h2>
         };
 
         function updateUI() {
-            // Ограничения шкал от 0 до 100
             gameState.hunger = Math.max(0, Math.min(100, gameState.hunger));
             gameState.energy = Math.max(0, Math.min(100, gameState.energy));
-
-            document.getElementById('balance-display').innerText = $${gameState.balance};
+document.getElementById('balance-display').innerText = $${gameState.balance};
             document.getElementById('income-display').innerText = gameState.income;
-// Обновление шкал
+            
             document.getElementById('text-hunger').innerText = ${Math.floor(gameState.hunger)}%;
             document.getElementById('bar-hunger').style.width = ${gameState.hunger}%;
             document.getElementById('text-energy').innerText = ${Math.floor(gameState.energy)}%;
             document.getElementById('bar-energy').style.width = ${gameState.energy}%;
 
-            // Бизнес
             document.getElementById('count-cafe').innerText = gameState.businesses.cafe;
             document.getElementById('count-shop').innerText = gameState.businesses.shop;
 
-            // Блокировка работы при голоде/усталости
             document.getElementById('btn-work').disabled = (gameState.hunger <= 5 || gameState.energy <= 5);
 
-            // Имущество кнопки
             updateAssetButton('car1', 'btn-car1', 'status-car1', 'В гараже');
             updateAssetButton('car2', 'btn-car2', 'status-car2', 'В гараже');
             updateAssetButton('house1', 'btn-house1', 'status-house1', 'Куплено');
@@ -116,10 +218,50 @@ lance-display">$0</h2>
             if(bought) document.getElementById(btnId).innerText = successTxt;
         }
 
-        // Клики (Работа)
         function earnClick() {
             if (gameState.hunger > 5 && gameState.energy > 5) {
                 gameState.balance += 1;
-                gameState.hunger -= 1.2; // Тратим голод при клике
-                gameState.energy -= 1.5; // Тратим энергию
+                gameState.hunger -= 1.2;
+                gameState.energy -= 1.5;
                 updateUI();
+                if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+            }
+        }
+
+        function sleep() {
+            gameState.energy += 40;
+            if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+            updateUI();
+        }
+
+        function buyFood(price, points) {
+            if (gameState.balance >= price && gameState.hunger < 100) {
+gameState.balance -= price;
+gameState.hunger += points;
+updateUI();
+}
+}
+function buyBusiness(type, price, inc) {
+if (gameState.balance >= price) {
+gameState.balance -= price;
+gameState.businesses[type] += 1;
+gameState.income += inc;
+updateUI();
+}
+}
+function buyAsset(type, price) {
+if (gameState.balance >= price && !gameState.assets[type]) {
+gameState.balance -= price;
+gameState.assets[type] = true;
+updateUI();
+}
+}
+setInterval(() => {
+gameState.hunger -= 0.15;
+gameState.energy -= 0.08;
+if (gameState.income > 0 && gameState.hunger > 0) {
+gameState.balance += gameState.income;
+}
+updateUI();
+}, 1000);
+updateUI();
