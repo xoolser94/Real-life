@@ -182,6 +182,13 @@
                 <small>Доход: +$18/сек. Цена: $700</small>
             </div>
             <button id="buy-shopd" class="action-btn" onclick="buyAsset('shop', 700, 18)">Купить</button>
+     </div>
+         <div class="item-row">
+            <div>
+                <strong>🔧 Автосервис</strong><br>
+                <small>Доход: +$32/сек. Цена: 1900</small>
+            </div>
+            <button id="buy-sto" class="action-btn" onclick="buyAsset('shop', 1900, 32)">Купить</button>
         </div>
     </div>
 
@@ -244,6 +251,7 @@
             document.getElementById('buy-cafe').disabled = gameState.balance < 100;
             document.getElementById('buy-shop').disabled = gameState.balance < 350;
             document.getElementById('buy-shopd').disabled = gameState.balance < 700;
+            document.getElementById('buy-sto').disabled = gameState.balance < 1900;
             
             if (gameState.inventory.includes('bike')) {
                 document.getElementById('buy-bike').innerText = 'В гараже';
