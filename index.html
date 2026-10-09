@@ -337,11 +337,12 @@
             <div id="income" class="stat-val">$0/сек</div>
         </div>
     </div>
-
-    <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('work')">💼 Работа</button>
-        <button class="tab-btn" onclick="switchTab('business')">🏢 Бизнес</button>
-        <button class="tab-btn" onclick="switchTab('garage')">🚗 Гараж</button>
+ 
+       <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('work')">💼 Работа</button>
+    <button class="tab-btn" onclick="switchTab('business')">🏢 Бизнес</button>
+    <button class="tab-btn" onclick="switchTab('garage')">🚗 Гараж</button>
+    <button class="tab-btn" onclick="switchTab('wardrobe')">👔 Одежда</button>
     </div>
 
     <!-- Вкладка РАБОТА -->
@@ -385,39 +386,96 @@
 
    <!-- Вкладка ГАРАЖ -->
 <div id="garage-panel" class="panel">
-  <div class="item-row">
-    <div>
-      <strong>🚲 Велосипед Stels</strong><br>
-      <small>Престиж. Цена: $30</small>
+    <div class="item-row">
+        <div>
+            <strong>🚲 Велосипед Stels</strong><br>
+            <small>Цена: $30</small>
+        </div>
+        <button id="buy-bike" class="action-btn" onclick="buyItem('bike', 30, 'Велосипед')">Купить</button>
     </div>
-    <!-- Передаем уникальный id 'bike' -->
-    <button id="buy-bike" class="action-btn" onclick="buyItem('bike', 30, 'Велосипед')">Купить</button> 
-  </div>
-  <div class="item-row">
-    <div>
-      <strong>🚗 Lada 2101</strong><br>
-      <small>Престиж. Цена: $250</small>
+    <div class="item-row">
+        <div>
+            <strong>🚗 Lada 2101</strong><br>
+            <small>Цена: $250</small>
+        </div>
+        <button id="buy-car2101" class="action-btn" onclick="buyItem('car2101', 250, 'Lada 2101')">Купить</button>
     </div>
-    <!-- Передаем уникальный id 'car2101' -->
-    <button id="buy-car2101" class="action-btn" onclick="buyItem('car2101', 250, 'Lada 2101')">Купить</button> 
-  </div>
-  <div class="item-row">
-    <div>
-      <strong>🚗 Lada Vesta</strong><br>
-      <small>Престиж. Цена: $750</small>
+    <div class="item-row">
+        <div>
+            <strong>🚗 Lada Vesta</strong><br>
+            <small>Цена: $750</small>
+        </div>
+        <button id="buy-carvesta" class="action-btn" onclick="buyItem('carvesta', 750, 'Lada Vesta')">Купить</button>
     </div>
-    <!-- Передаем уникальный id 'carvesta' -->
-    <button id="buy-carvesta" class="action-btn" onclick="buyItem('carvesta', 750, 'Lada Vesta')">Купить</button> 
-  </div>
-  <div class="item-row">
-    <div>
-      <strong>🚗 Bmw e39</strong><br>
-      <small>Престиж. Цена: $1150</small>
+    <div class="item-row">
+        <div>
+            <strong>🚗 Bmw e39</strong><br>
+            <small>Цена: $1,150</small>
+        </div>
+        <button id="buy-care39" class="action-btn" onclick="buyItem('care39', 1150, 'Bmw e39')">Купить</button>
     </div>
-    <!-- Передаем уникальный id 'care39' -->
-    <button id="buy-care39" class="action-btn" onclick="buyItem('care39', 1150, 'Bmw e39')">Купить</button> 
-  </div>
+    <!-- НОВЫЕ МАШИНЫ -->
+    <div class="item-row">
+        <div>
+            <strong>🏎️ Porsche 911 Turbo</strong><br>
+            <small>Цена: $5,500</small>
+        </div>
+        <button id="buy-porsche" class="action-btn" onclick="buyItem('porsche', 5500, 'Porsche 911')">Купить</button>
+    </div>
+    <div class="item-row">
+        <div>
+            <strong>🚀 Lamborghini Aventador</strong><br>
+            <small>Цена: $15,000</small>
+        </div>
+        <button id="buy-lambo" class="action-btn" onclick="buyItem('lambo', 15000, 'Lamborghini')">Купить</button>
+    </div>
+    <div class="item-row">
+        <div>
+            <strong>👑 Rolls-Royce Phantom</strong><br>
+            <small>Цена: $45,000</small>
+        </div>
+        <button id="buy-rolls" class="action-btn" onclick="buyItem('rolls', 45000, 'Rolls-Royce')">Купить</button>
+    </div>
 </div>
+
+ <div id="wardrobe-panel" class="panel">
+    <div class="item-row">
+        <div>
+            <strong>👕 Рваная футболка</strong><br>
+            <small>Бонус: +0% к XP. Цена: $10</small>
+        </div>
+        <button id="buy-cloth_tshirt" class="action-btn" onclick="buyItem('cloth_tshirt', 10, 'Рваная футболка')">Купить</button>
+    </div>
+    <div class="item-row">
+        <div>
+            <strong>👟 Спортивный костюм Abibas</strong><br>
+            <small>Бонус: +10% к XP. Цена: $80</small>
+        </div>
+        <button id="buy-cloth_sport" class="action-btn" onclick="buyItem('cloth_sport', 80, 'Костюм Abibas')">Купить</button>
+    </div>
+    <div class="item-row">
+        <div>
+            <strong>🧥 Стильное пальто</strong><br>
+            <small>Бонус: +25% к XP. Цена: $400</small>
+        </div>
+        <button id="buy-cloth_coat" class="action-btn" onclick="buyItem('cloth_coat', 400, 'Стильное пальто')">Купить</button>
+    </div>
+    <div class="item-row">
+        <div>
+            <strong>💼 Деловой костюм Тройка</strong><br>
+            <small>Бонус: +60% к XP. Цена: $1,800</small>
+        </div>
+        <button id="buy-cloth_suit" class="action-btn" onclick="buyItem('cloth_suit', 1800, 'Костюм Тройка')">Купить</button>
+    </div>
+    <div class="item-row">
+        <div>
+            <strong>👑 Смокинг Gucci c бриллиантами</strong><br>
+            <small>Бонус: +150% к XP. Цена: $8,500</small>
+        </div>
+        <button id="buy-cloth_gucci" class="action-btn" onclick="buyItem('cloth_gucci', 8500, 'Смокинг Gucci')">Купить</button>
+    </div>
+</div>
+
     <div id="logs" class="logs">Игра началась! Развивайся.</div>
 
 <script>
@@ -452,7 +510,17 @@ function addXp(amount) {
         gameState.xp = 0;
         return;
     }
-    gameState.xp += amount;
+
+    // Расчет бонуса к опыту от купленной одежды
+    let xpMultiplier = 1.0;
+    if (gameState.inventory.includes('cloth_sport')) xpMultiplier += 0.10;
+    if (gameState.inventory.includes('cloth_coat')) xpMultiplier += 0.25;
+    if (gameState.inventory.includes('cloth_suit')) xpMultiplier += 0.60;
+    if (gameState.inventory.includes('cloth_gucci')) xpMultiplier += 1.50;
+
+    // Применяем бонус и округляем
+    gameState.xp += Math.round(amount * xpMultiplier);
+    
     let nextLevelXp = getNextLevelXp(gameState.level);
     while (gameState.xp >= nextLevelXp && gameState.level < 100) {
         gameState.xp -= nextLevelXp;
@@ -462,6 +530,7 @@ function addXp(amount) {
         if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
     }
 }
+
 
 function getStatusName(level) {
     if (level >= 90) return 'Аристократ';
@@ -493,11 +562,21 @@ function updateUI() {
     updateBizButton('buy-salon', 'salon', 700);
     updateBizButton('buy-sto', 'sto', 1900);
 
-    // Проверка гаража
+      // 3. Проверка гаража и новых машин
     updateVehicleButton('buy-bike', 'bike', 30);
     updateVehicleButton('buy-car2101', 'car2101', 250);
     updateVehicleButton('buy-carvesta', 'carvesta', 750);
     updateVehicleButton('buy-care39', 'care39', 1150);
+    updateVehicleButton('buy-porsche', 'porsche', 5500);
+    updateVehicleButton('buy-lambo', 'lambo', 15000);
+    updateVehicleButton('buy-rolls', 'rolls', 45000);
+
+    // Проверка одежды в гардеробе
+    updateVehicleButton('buy-cloth_tshirt', 'cloth_tshirt', 10);
+    updateVehicleButton('buy-cloth_sport', 'cloth_sport', 80);
+    updateVehicleButton('buy-cloth_coat', 'cloth_coat', 400);
+    updateVehicleButton('buy-cloth_suit', 'cloth_suit', 1800);
+    updateVehicleButton('buy-cloth_gucci', 'cloth_gucci', 8500);
 
     // Живое обновление статистики в меню
     if (document.getElementById('menu-modal-overlay').style.display === 'flex' && document.getElementById('menu-stats').style.display === 'block') {
