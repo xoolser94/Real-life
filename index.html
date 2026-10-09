@@ -266,6 +266,28 @@
             width: 0%;
             transition: width 0.3s ease;
         }
+     
+/* Красивая сетка для предметов инвентаря */
+.inventory-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* В два столбца */
+    gap: 8px;
+    margin-top: 10px;
+}
+
+/* Стиль карточки предмета */
+.inventory-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 12px 8px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+}
 
     </style>
 </head>
@@ -298,15 +320,13 @@
             <div class="modal-stat-row"><span>Доход в секунду:</span> <strong id="m-stat-sec">$0</strong></div>
             <div class="modal-stat-row"><span>Доход в минуту:</span> <strong id="m-stat-min">$0</strong></div>
         </div>
-        
-        <!-- Контент Инвентаря -->
-                <!-- Контент Инвентаря -->
+       
+               <!-- Контент Инвентаря -->
         <div id="menu-inventory" class="menu-panel" style="display:none;">
             <h3>🎒 Твой инвентарь</h3>
-            <!-- Сюда скрипт будет выводить список вещей -->
-            <div id="inventory-list" style="max-height: 200px; overflow-y: auto; margin-bottom: 10px;"></div>
+            <!-- Сюда скрипт будет красиво выводить карточки -->
+            <div id="inventory-list"></div>
         </div>
-
         
         <!-- Контент Банка -->
         <div id="menu-bank" class="menu-panel" style="display:none;">
@@ -706,10 +726,31 @@ function openMenuTab(tabId) {
         document.getElementById('m-stat-sec').innerText = '\$' + gameState.income;
         document.getElementById('m-stat-min').innerText = '\$' + (gameState.income * 60);
     }
-    
-    // Если открыли Инвентарь — генерируем список вещей
+
+      // Если открыли Инвентарь — генерируем красивые карточки
+ 
     if (tabId === 'menu-inventory') {
         const listContainer = document.getElementById('inventory-list');
+        
+        if (gameState.inventory.length === 0) {
+            listContainer.innerHTML = `<p style="color: var(--tg-theme-hint-color); text-align:center; font-size: 13px; margin: 20px 0;">У тебя пока нет купленного имущества.<br>Загляни в Гараж или Одежду! 😉</p>`;
+        } else {
+            // Обертываем карточки в созданный нами класс сетки inventory-grid
+            listContainer.innerHTML = `
+                <div class="inventory-grid">
+                    ${gameState.inventory.map(itemId => {
+                        const readableName = itemNames[itemId] || itemId;
+                        return `
+                            <div class="inventory-card">
+                                \${readableName}
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+    }
+
         
         if (gameState.inventory.length === 0) {
             listContainer.innerHTML = `<p style="color: var(--tg-theme-hint-color); text-align:center; font-size: 13px;">У вас пока нет купленного имущества. Загляните в Гараж или Одежду!</p>`;
