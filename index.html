@@ -284,15 +284,17 @@ if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
     document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name;
 }
 
-// Состояние игры (сохраняется в localStorage)
-let gameState = JSON.parse(localStorage.getItem('tg_life_sim_state')) || { 
-    balance: 100, 
-    income: 0, 
-    level: 0, 
-    xp: 0, 
-    inventory: [] 
-};
+// Состояние игры (с защитой от поломки старых сохранений)
+let loadedState = JSON.parse(localStorage.getItem('tg_life_sim_state')) || {};
 
+let gameState = {
+    balance: typeof loadedState.balance === 'number' ? loadedState.balance : 100,
+    income: typeof loadedState.income === 'number' ? loadedState.income : 0,
+    level: typeof loadedState.level === 'number' ? loadedState.level : 0,
+    xp: typeof loadedState.xp === 'number' ? loadedState.xp : 0,
+    inventory: Array.isArray(loadedState.inventory) ? loadedState.inventory : []
+};
+ 
 function getNextLevelXp(level) {
     return level * 100 + 100;
 }
