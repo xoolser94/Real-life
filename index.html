@@ -314,17 +314,16 @@
         <!-- Контент Статистики -->
         <div id="menu-stats" class="menu-panel">
             <h3>📊 Личная статистика</h3>
-            <div class="modal-stat-row"><span>Текущий уровень:</span> <strong id="m-stat-level">0</strong></div>
+                     <div class="modal-stat-row"><span>Текущий уровень:</span> <strong id="m-stat-level">0</strong></div>
             <div class="modal-stat-row"><span>Текущий статус:</span> <strong id="m-stat-status">Бомж</strong></div>
             <div class="modal-stat-row"><span>Общий баланс:</span> <strong id="m-stat-balance">$0</strong></div>
             <div class="modal-stat-row"><span>Доход в секунду:</span> <strong id="m-stat-sec">$0</strong></div>
             <div class="modal-stat-row"><span>Доход в минуту:</span> <strong id="m-stat-min">$0</strong></div>
         </div>
-       
-               <!-- Контент Инвентаря -->
+        
+        <!-- Контент Инвентаря (Новая красивая сетка) -->
         <div id="menu-inventory" class="menu-panel" style="display:none;">
             <h3>🎒 Твой инвентарь</h3>
-            <!-- Сюда скрипт будет красиво выводить карточки -->
             <div id="inventory-list"></div>
         </div>
         
@@ -349,33 +348,34 @@
     </div>
 </div>
 
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div>💵 Баланс</div>
-            <div id="balance" class="stat-val">$100</div>
-        </div>
-        <div class="stat-card">
-            <div>⏱ Пассивный доход</div>
-            <div id="income" class="stat-val">$0/сек</div>
-        </div>
+<div class="stats-grid">
+    <div class="stat-card">
+        <div>💵 Баланс</div>
+        <div id="balance" class="stat-val">$100</div>
     </div>
- 
-       <div class="nav-tabs">
+    <div class="stat-card">
+        <div>⏱ Пассивный доход</div>
+        <div id="income" class="stat-val">$0/сек</div>
+    </div>
+</div>
+
+<!-- Навигация: Добавлена новая вкладка Одежда -->
+<div class="nav-tabs">
     <button class="tab-btn active" onclick="switchTab('work')">💼 Работа</button>
     <button class="tab-btn" onclick="switchTab('business')">🏢 Бизнес</button>
     <button class="tab-btn" onclick="switchTab('garage')">🚗 Гараж</button>
     <button class="tab-btn" onclick="switchTab('wardrobe')">👔 Одежда</button>
-    </div>
+</div>
 
-    <!-- Вкладка РАБОТА -->
-    <div id="work-panel" class="panel active">
-        <div style="text-align:center; padding: 20px 0;">
-            <button class="action-btn" style="padding: 15px 30px; font-size: 16px;" onclick="clickWork()">👋 Работать руками (+$1)</button>
-        </div>
+<!-- Вкладка РАБОТА -->
+<div id="work-panel" class="panel active">
+    <div style="text-align:center; padding: 20px 0;">
+        <button class="action-btn" style="padding: 15px 30px; font-size: 16px;" onclick="clickWork()">👋 Работать руками (+$1)</button>
     </div>
+</div>
 
-    <!-- Вкладка БИЗНЕС -->
-   <div id="business-panel" class="panel">
+<!-- Вкладка БИЗНЕС -->
+<div id="business-panel" class="panel">
     <div class="item-row">
         <div>
             <strong>☕ Кофейня <span id="count-cafe" class="count-badge">0</span>/25</strong><br>
@@ -406,7 +406,7 @@
     </div>
 </div>
 
-   <!-- Вкладка ГАРАЖ -->
+<!-- Вкладка ГАРАЖ (Добавлены люксовые машины) -->
 <div id="garage-panel" class="panel">
     <div class="item-row">
         <div>
@@ -432,75 +432,76 @@
     <div class="item-row">
         <div>
             <strong>🚗 Bmw e39</strong><br>
-            <small>Цена: $1,150</small>
+            <small>Цена: $1150</small>
         </div>
         <button id="buy-care39" class="action-btn" onclick="buyItem('care39', 1150, 'Bmw e39')">Купить</button>
     </div>
-    <!-- НОВЫЕ МАШИНЫ -->
     <div class="item-row">
         <div>
             <strong>🏎️ Porsche 911 Turbo</strong><br>
-            <small>Цена: $5,500</small>
+            <small>Цена: $5500</small>
         </div>
         <button id="buy-porsche" class="action-btn" onclick="buyItem('porsche', 5500, 'Porsche 911')">Купить</button>
     </div>
     <div class="item-row">
         <div>
             <strong>🚀 Lamborghini Aventador</strong><br>
-            <small>Цена: $15,000</small>
+            <small>Цена: $15000</small>
         </div>
         <button id="buy-lambo" class="action-btn" onclick="buyItem('lambo', 15000, 'Lamborghini')">Купить</button>
     </div>
     <div class="item-row">
         <div>
             <strong>👑 Rolls-Royce Phantom</strong><br>
-            <small>Цена: $45,000</small>
+            <small>Цена: $45000</small>
         </div>
         <button id="buy-rolls" class="action-btn" onclick="buyItem('rolls', 45000, 'Rolls-Royce')">Купить</button>
     </div>
 </div>
 
- <div id="wardrobe-panel" class="panel">
+<!-- Новая вкладка ОДЕЖДА -->
+<div id="wardrobe-panel" class="panel">
     <div class="item-row">
         <div>
             <strong>👕 Рваная футболка</strong><br>
-            <small>Бонус: +0% к XP. Цена: $10</small>
+            <small>Бонус: +0% XP. Цена: $10</small>
         </div>
         <button id="buy-cloth_tshirt" class="action-btn" onclick="buyItem('cloth_tshirt', 10, 'Рваная футболка')">Купить</button>
     </div>
     <div class="item-row">
         <div>
-            <strong>👟 Спортивный костюм Abibas</strong><br>
-            <small>Бонус: +10% к XP. Цена: $80</small>
+            <strong>CN Спортивный костюм Abibas</strong><br>
+            <small>Бонус: +10% XP. Цена: $80</small>
         </div>
         <button id="buy-cloth_sport" class="action-btn" onclick="buyItem('cloth_sport', 80, 'Костюм Abibas')">Купить</button>
     </div>
     <div class="item-row">
         <div>
             <strong>🧥 Стильное пальто</strong><br>
-            <small>Бонус: +25% к XP. Цена: $400</small>
+            <small>Бонус: +25% XP. Цена: $400</small>
         </div>
         <button id="buy-cloth_coat" class="action-btn" onclick="buyItem('cloth_coat', 400, 'Стильное пальто')">Купить</button>
     </div>
     <div class="item-row">
         <div>
             <strong>💼 Деловой костюм Тройка</strong><br>
-            <small>Бонус: +60% к XP. Цена: $1,800</small>
+            <small>Бонус: +60% XP. Цена: $1800</small>
         </div>
         <button id="buy-cloth_suit" class="action-btn" onclick="buyItem('cloth_suit', 1800, 'Костюм Тройка')">Купить</button>
     </div>
     <div class="item-row">
         <div>
-            <strong>👑 Смокинг Gucci c бриллиантами</strong><br>
-            <small>Бонус: +150% к XP. Цена: $8,500</small>
+            <strong>👑 Смокинг Gucci с бриллиантами</strong><br>
+            <small>Бонус: +150% XP. Цена: $8500</small>
         </div>
         <button id="buy-cloth_gucci" class="action-btn" onclick="buyItem('cloth_gucci', 8500, 'Смокинг Gucci')">Купить</button>
     </div>
 </div>
 
-    <div id="logs" class="logs">Игра началась! Развивайся.</div>
+<div id="logs" class="logs">Игра началась! Развивайся.</div>
 
 <script>
+ 
 const tg = window.Telegram.WebApp;
 tg.expand();
 
@@ -511,23 +512,22 @@ if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
 // Конфиг максимальных лимитов для бизнеса
 const businessLimits = { cafe: 25, shop: 25, salon: 10, sto: 10 };
 
-// Словарь красивых названий для инвентаря
+// Словарь красивых названий для карточек инвентаря
 const itemNames = {
     'bike': '🚲 Велосипед Stels',
     'car2101': '🚗 Lada 2101',
     'carvesta': '🚗 Lada Vesta',
     'care39': '🚗 Bmw e39',
-    'porsche': '🏎️ Porsche Turbo',
+    'porsche': '🏎️ Porsche emergency services Turbo',
     'lambo': '🚀 Lamborghini Aventador',
     'rolls': '👑 Rolls-Royce Phantom',
     'cloth_tshirt': '👕 Рваная футболка',
-    'cloth_sport': '👟 Спортивный костюм Abibas',
+    'cloth_sport': '👟 Костюм Abibas',
     'cloth_coat': '🧥 Стильное пальто',
-    'cloth_suit': '💼 Деловой костюм Тройка',
+    'cloth_suit': '💼 Костюм Тройка',
     'cloth_gucci': '👑 Смокинг Gucci'
 };
 
- 
 // Состояние игры
 let loadedState = JSON.parse(localStorage.getItem('tg_life_sim_state')) || {};
 let gameState = {
@@ -539,8 +539,8 @@ let gameState = {
     businesses: loadedState.businesses || { cafe: 0, shop: 0, salon: 0, sto: 0 }
 };
 
+// Сбалансированная экспоненциальная формула уровней
 function getNextLevelXp(level) {
-    // Чем выше уровень, тем сильнее возрастает сложность
     return Math.round(100 + (level * 150) + (Math.pow(level, 1.5) * 20));
 }
 
@@ -551,14 +551,13 @@ function addXp(amount) {
         return;
     }
 
-    // Расчет бонуса к опыту от купленной одежды
+    // Бонусы к получаемому опыту от шмоток
     let xpMultiplier = 1.0;
     if (gameState.inventory.includes('cloth_sport')) xpMultiplier += 0.10;
     if (gameState.inventory.includes('cloth_coat')) xpMultiplier += 0.25;
     if (gameState.inventory.includes('cloth_suit')) xpMultiplier += 0.60;
     if (gameState.inventory.includes('cloth_gucci')) xpMultiplier += 1.50;
 
-    // Применяем бонус и округляем
     gameState.xp += Math.round(amount * xpMultiplier);
     
     let nextLevelXp = getNextLevelXp(gameState.level);
@@ -570,7 +569,6 @@ function addXp(amount) {
         if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
     }
 }
-
 
 function getStatusName(level) {
     if (level >= 90) return 'Аристократ';
@@ -596,13 +594,13 @@ function updateUI() {
     document.getElementById('balance').innerText = '\$' + gameState.balance;
     document.getElementById('income').innerText = '\$' + gameState.income + '/сек';
 
-    // Проверка доступности кнопок бизнеса и лимитов
+    // Проверка кнопок бизнеса
     updateBizButton('buy-cafe', 'cafe', 100);
     updateBizButton('buy-shop', 'shop', 350);
     updateBizButton('buy-salon', 'salon', 700);
     updateBizButton('buy-sto', 'sto', 1900);
 
-      // 3. Проверка гаража и новых машин
+    // Проверка гаража и новых машин
     updateVehicleButton('buy-bike', 'bike', 30);
     updateVehicleButton('buy-car2101', 'car2101', 250);
     updateVehicleButton('buy-carvesta', 'carvesta', 750);
@@ -611,7 +609,7 @@ function updateUI() {
     updateVehicleButton('buy-lambo', 'lambo', 15000);
     updateVehicleButton('buy-rolls', 'rolls', 45000);
 
-    // Проверка одежды в гардеробе
+    // Проверка гардероба
     updateVehicleButton('buy-cloth_tshirt', 'cloth_tshirt', 10);
     updateVehicleButton('buy-cloth_sport', 'cloth_sport', 80);
     updateVehicleButton('buy-cloth_coat', 'cloth_coat', 400);
@@ -654,9 +652,10 @@ function updateVehicleButton(buttonId, itemId, price) {
     const btn = document.getElementById(buttonId);
     if (!btn) return;
     if (gameState.inventory.includes(itemId)) {
-        btn.innerText = 'В гараже';
+        btn.innerText = 'Куплено';
         btn.disabled = true;
     } else {
+        btn.innerText = 'Купить';
         btn.disabled = gameState.balance < price;
     }
 }
@@ -702,6 +701,8 @@ function switchTab(tab) {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById(tab + '-panel').classList.add('active');
+    
+    // Подсвечиваем активную кнопку
     if (event && event.currentTarget) {
         event.currentTarget.classList.add('active');
     }
@@ -714,11 +715,10 @@ function toggleMenu(open) {
 }
 
 function openMenuTab(tabId) {
-    toggleMenu(false); // Закрываем шторку меню
+    toggleMenu(false);
     document.getElementById('menu-modal-overlay').style.display = 'flex';
     document.querySelectorAll('.menu-panel').forEach(panel => panel.style.display = 'none');
     
-    // Если открыли Статистику
     if (tabId === 'menu-stats') {
         document.getElementById('m-stat-level').innerText = gameState.level;
         document.getElementById('m-stat-status').innerText = getStatusName(gameState.level);
@@ -727,44 +727,20 @@ function openMenuTab(tabId) {
         document.getElementById('m-stat-min').innerText = '\$' + (gameState.income * 60);
     }
 
-      // Если открыли Инвентарь — генерируем красивые карточки
- 
+    // Генерируем красивую плиточную сетку для инвентаря
     if (tabId === 'menu-inventory') {
         const listContainer = document.getElementById('inventory-list');
-        
         if (gameState.inventory.length === 0) {
             listContainer.innerHTML = `<p style="color: var(--tg-theme-hint-color); text-align:center; font-size: 13px; margin: 20px 0;">У тебя пока нет купленного имущества.<br>Загляни в Гараж или Одежду! 😉</p>`;
         } else {
-            // Обертываем карточки в созданный нами класс сетки inventory-grid
             listContainer.innerHTML = `
                 <div class="inventory-grid">
                     ${gameState.inventory.map(itemId => {
                         const readableName = itemNames[itemId] || itemId;
-                        return `
-                            <div class="inventory-card">
-                                \${readableName}
-                            </div>
-                        `;
+                        return `<div class="inventory-card">\${readableName}</div>`;
                     }).join('')}
                 </div>
             `;
-        }
-    }
-
-        
-        if (gameState.inventory.length === 0) {
-            listContainer.innerHTML = `<p style="color: var(--tg-theme-hint-color); text-align:center; font-size: 13px;">У вас пока нет купленного имущества. Загляните в Гараж или Одежду!</p>`;
-        } else {
-            // Перебираем массив инвентаря и создаем строки
-            listContainer.innerHTML = gameState.inventory.map(itemId => {
-                const readableName = itemNames[itemId] || itemId;
-                return `
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 4px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px;">
-                        <span>${readableName}</span>
-                        <span style="color: #4caf50; font-size: 12px; font-weight: bold;">✔ В наличии</span>
-                    </div>
-                `;
-            }).join('');
         }
     }
     
@@ -775,20 +751,17 @@ function closeMenuModal() {
     document.getElementById('menu-modal-overlay').style.display = 'none';
 }
 
-// Каждую секунду начисляем доход и сбалансированный опыт
+// Начисление пассивного дохода и сбалансированного опыта (10% от дохода в сек)
 setInterval(() => {
     if (gameState.income > 0) {
         gameState.balance += gameState.income;
-        
-        // Даем только 10% от дохода в виде опыта (минимум 1 XP, если доход есть)
         let passiveXp = Math.max(1, Math.floor(gameState.income * 0.10));
         addXp(passiveXp);
     }
     updateUI();
 }, 1000);
 
-
 updateUI();
 </script>
- </body>
-    </html>
+</body>
+</html>
