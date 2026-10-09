@@ -2,350 +2,154 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Симулятор Жизни</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Симулятор Жизни TG</title>
+    <!-- Подключаем Telegram Web App SDK -->
     <script src="https://telegram.org"></script>
     <style>
-        :root {
-            --bg-color: #131926;
-            --card-bg: #1e2640;
-            --accent-color: #4ade80;
-            --text-color: #ffffff;
-            --text-muted: #94a3b8;
+        * {
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 16px;
+            background-color: var(--tg-theme-bg-color, #f0f2f5);
+            color: var(--tg-theme-text-color, #222);
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-user-select: none;
+            justify-content: center;
+            height: 100vh;
+            padding: 20px;
         }
-        .header {
-            width: 100%;
-            background: var(--card-bg);
-            padding: 16px;
+        .card {
+            background: var(--tg-theme-secondary-bg-color, #fff);
             border-radius: 16px;
-            margin-bottom: 20px;
-            box-sizing: border-box;
+            padding: 20px;
+            width: 100%;
+            max-width: 360px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
         }
-        .status-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        h1 {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        .stats {
+            margin: 15px 0;
+            text-align: left;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        .bar-container {
+            width: 100%;
+            background: #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            height: 12px;
             margin-bottom: 10px;
         }
-        .status-title {
-            font-size: 14px;
-            color: var(--text-muted);
-        }
-        .status-value {
-            font-weight: bold;
-            color: var(--accent-color);
-            background: rgba(74, 222, 128, 0.1);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 14px;
-        }
-        .progress-bar-bg {
-            background: #0f172a;
-            height: 8px;
-            border-radius: 4px;
-            overflow: hidden;
-            width: 100%;
-        }
-        .progress-bar-fill {
-            background: linear-gradient(90deg, #22c55e, #4ade80);
+        .bar {
             height: 100%;
-            width: 0%;
             transition: width 0.3s ease;
         }
-        .balance-section {
-            text-align: center;
-            margin: 20px 0;
-        }
-        .balance-label {
-            font-size: 14px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-        }
-        .balance-amount {
-            font-size: 38px;
-            font-weight: 800;
-            margin: 5px 0;
-        }
-        .passive-income {
-            font-size: 14px;
-            color: var(--accent-color);
-        }
-        .clicker-container {
-            position: relative;
-            margin: 20px 0;
-            display: flex;
-            justify-content: center;
-            width: 100%;
-        }
-        .click-button {
-            width: 180px;
-            height: 180px;
-            background: radial-gradient(circle, #2e3b66 0%, #1e2640 100%);
-            border-radius: 50%;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 64px;
-            cursor: pointer;
-            transition: transform 0.05s ease;
-            border: 4px solid #2d3758;
-        }
-        .click-button:active {
-            transform: scale(0.95);
-        }
-        .floating-text {
-            position: absolute;
-            color: #ffffff;
-            font-weight: bold;
-            font-size: 24px;
-            pointer-events: none;
-            animation: floatUp 0.6s ease-out forwards;
-        }
-        @keyframes floatUp {
-            0% { opacity: 1; transform: translateY(0); }
-            100% { opacity: 0; transform: translateY(-100px); }
-        }
-        .businesses-section {
-            width: 100%;
-            margin-top: 15px;
-            box-sizing: border-box;
-        }
-        .section-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 12px;
-        }
-        .business-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            width: 100%;
-        }
-        .business-card {
-            background: var(--card-bg);
-            border-radius: 14px;
-            padding: 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .biz-name {
-            font-weight: bold;
-            font-size: 16px;
-        }
-        .biz-stats {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-        .biz-count {
-            color: var(--accent-color);
-            font-weight: 600;
-        }
-        .buy-button {
-            background: var(--accent-color);
-            color: #000000;
+        #health-bar { background: #e74c3c; }
+        #energy-bar { background: #f1c40f; }
+        #money-bar  { background: #2ecc71; }
+
+        button {
+            background-color: var(--tg-theme-button-color, #3390ec);
+            color: var(--tg-theme-button-text-color, #fff);
             border: none;
-            padding: 10px 16px;
             border-radius: 10px;
-            font-weight: bold;
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 8px;
             cursor: pointer;
         }
-        .buy-button:disabled {
-            background: #334155;
-            color: #64748b;
-            cursor: not-allowed;
+        button:active {
+            opacity: 0.8;
         }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="status-container">
-            <span class="status-title">Ваш статус в жизни:</span>
-            <span id="player-status" class="status-value">Бомж</span>
+    <div class="card">
+        <h1 id="user-greeting">Симулятор жизни</h1>
+        
+        <div class="stats">
+            <p>Здоровье: <span id="health-val">100</span>%</p>
+            <div class="bar-container"><div id="health-bar" class="bar" style="width: 100%;"></div></div>
+
+            <p>Энергия: <span id="energy-val">100</span>%</p>
+            <div class="bar-container"><div id="energy-bar" class="bar" style="width: 100%;"></div></div>
+
+            <p>Деньги: \$<span id="money-val">50</span></p>
+            <div class="bar-container"><div id="money-bar" class="bar" style="width: 50%;"></div></div>
         </div>
-        <div class="progress-bar-bg">
-            <div id="progress-bar" class="progress-bar-fill"></div>
-        </div>
-    </div>
 
-    <div class="balance-section">
-        <div class="balance-label">Капитал</div>
-        <div id="balance" class="balance-amount">0 ₽</div>
-        <div id="income-speed" class="passive-income">+0 ₽/сек пассивно</div>
-    </div>
-
-    <div class="clicker-container">
-        <div class="click-button" id="click-btn">💼</div>
-    </div>
-
-    <div class="businesses-section">
-        <div class="section-title">Купить источники дохода</div>
-        <div class="business-list" id="business-container"></div>
+        <button onclick="work()">Работать (+20\$, -30 Энергии)</button>
+        <button onclick="eat()">Поесть (-10\$, +40 Здоровья)</button>
+        <button onclick="sleep()">Спать (+100 Энергии)</button>
     </div>
 
     <script>
-        
-        const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-        if (tg && typeof tg.expand === 'function') {
-            tg.expand();
+        // Инициализация Telegram WebApp
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+
+        // Персонализация: имя пользователя из Telegram
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            document.getElementById('user-greeting').innerText = 
+                `Привет, ${tg.initDataUnsafe.user.first_name}!`;
         }
 
-        let gameState = {
-            balance: 0,
-            clickPower: 1,
-            passiveIncome: 0,
-            statusIndex: 0
+        // Состояние персонажа
+        let state = {
+            health: 100,
+            energy: 100,
+            money: 50
         };
-
-        const statuses = [
-            { name: "Бомж", req: 0 },
-            { name: "Студент", req: 500 },
-            { name: "Фрилансер", req: 5000 },
-            { name: "Бизнесмен", req: 50000 },
-            { name: "Олигарх", req: 500000 },
-            { name: "Властелин Мира", req: Infinity }
-        ];
-
-        const businesses = [
-            { id: 'job', name: 'Раздача листовок', cost: 50, income: 1, count: 0, icon: '📄' },
-            { id: 'shawarma', name: 'Шаурмичная', cost: 300, income: 8, count: 0, icon: '🌯' },
-            { id: 'carwash', name: 'Автомойка', cost: 1500, income: 45, count: 0, icon: '🚗' },
-            { id: 'it_company', name: 'IT-Стартап', cost: 8000, income: 260, count: 0, icon: '💻' },
-            { id: 'crypto', name: 'Майнинг ферма', cost: 45000, income: 1500, count: 0, icon: '⚡' },
-            { id: 'oil', name: 'Нефтяная вышка', cost: 250000, income: 9000, count: 0, icon: '🛢️' }
-        ];
-
-        const balanceEl = document.getElementById('balance');
-        const incomeEl = document.getElementById('income-speed');
-        const clickBtn = document.getElementById('click-btn');
-        const businessContainer = document.getElementById('business-container');
-        const statusEl = document.getElementById('player-status');
-        const progressBar = document.getElementById('progress-bar');
-
-        function formatMoney(num) {
-            return num.toLocaleString('ru-RU') + ' ₽';
-        }
 
         function updateUI() {
-            balanceEl.textContent = formatMoney(Math.floor(gameState.balance));
-            incomeEl.textContent = `+${formatMoney(gameState.passiveIncome)}/сек пассивно`;
-            checkStatus();
-            updateBusinessButtons();
+            document.getElementById('health-val').innerText = state.health;
+            document.getElementById('health-bar').style.width = state.health + '%';
+
+            document.getElementById('energy-val').innerText = state.energy;
+            document.getElementById('energy-bar').style.width = state.energy + '%';
+
+            document.getElementById('money-val').innerText = state.money;
+            document.getElementById('money-bar').style.width = Math.min(state.money, 100) + '%';
         }
 
-        function checkStatus() {
-            let currentStatus = statuses[gameState.statusIndex];
-            let nextStatus = statuses[gameState.statusIndex + 1];
-
-            if (gameState.balance >= nextStatus.req && gameState.statusIndex < statuses.length - 2) {
-                gameState.statusIndex++;
-                currentStatus = statuses[gameState.statusIndex];
-                nextStatus = statuses[gameState.statusIndex + 1];
-                if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+        function work() {
+            if (state.energy < 30) {
+                alert('Слишком мало энергии! Нужно поспать.');
+                return;
             }
-
-            statusEl.textContent = currentStatus.name;
-
-            if (nextStatus.req !== Infinity) {
-                let progress = ((gameState.balance - currentStatus.req) / (nextStatus.req - currentStatus.req)) * 100;
-                progressBar.style.width = `${Math.min(Math.max(progress, 0), 100)}%`;
-            } else {
-                progressBar.style.width = '100%';
-            }
-        }
-
-        function initBusinesses() {
-            businessContainer.innerHTML = '';
-            businesses.forEach((biz, index) => {
-                const card = document.createElement('div');
-                card.className = 'business-card';
-                card.innerHTML = `
-                    <div>
-                        <div class="biz-name">${biz.icon} ${biz.name} <span class="biz-count" id="count-${biz.id}"></span></div>
-                        <div class="biz-stats">Доход: +${biz.income} ₽/с</div>
-                    </div>
-                    <button class="buy-button" id="btn-${biz.id}" onclick="buyBusiness(${index})">
-                        ${formatMoney(biz.cost)}
-                    </button>
-                `;
-                businessContainer.appendChild(card);
-            });
-        }
-
-        function updateBusinessButtons() {
-            businesses.forEach(biz => {
-                const btn = document.getElementById(`btn-${biz.id}`);
-        function updateBusinessButtons() {
-            businesses.forEach(biz => {
-                const btn = document.getElementById(`btn-${biz.id}`);
-                const countEl = document.getElementById(`count-${biz.id}`);
-                
-                if (btn && countEl) {
-                    btn.textContent = formatMoney(biz.cost);
-                    countEl.textContent = biz.count > 0 ? `x${biz.count}` : '';
-                    btn.disabled = gameState.balance < biz.cost;
-                }
-            });
-        }
-
-        window.buyBusiness = function(index) {
-            const biz = businesses[index];
-            if (gameState.balance >= biz.cost) {
-                gameState.balance -= biz.cost;
-                biz.count++;
-                gameState.passiveIncome += biz.income;
-                biz.cost = Math.floor(biz.cost * 1.15);
-                
-                if (tg && tg.HapticFeedback) {
-                    tg.HapticFeedback.impactOccurred('medium');
-                }
-                updateUI();
-            }
-        };
-
-        clickBtn.addEventListener('click', (e) => {
-            gameState.balance += gameState.clickPower;
-            
-            const floating = document.createElement('div');
-            floating.className = 'floating-text';
-            floating.style.left = `${e.clientX - 10}px`;
-            floating.style.top = `${e.clientY - 20}px`;
-            floating.textContent = `+${gameState.clickPower}₽`;
-            document.body.appendChild(floating);
-            
-            setTimeout(() => { floating.remove(); }, 600);
-            
-            if (tg && tg.HapticFeedback) {
-                tg.HapticFeedback.impactOccurred('light');
-            }
+            state.energy -= 30;
+            state.money += 20;
             updateUI();
-        });
-
-        setInterval(() => {
-            if (gameState.passiveIncome > 0) {
-                gameState.balance += gameState.passiveIncome;
-                updateUI();
-            }
-        }, 1000);
-
-        initBusinesses();
-        updateUI();
-        if (tg && typeof tg.ready === 'function') {
-            tg.ready();
         }
+
+        function eat() {
+            if (state.money < 10) {
+                alert('Недостаточно денег на еду!');
+                return;
+            }
+            state.money -= 10;
+            state.health = Math.min(100, state.health + 40);
+            updateUI();
+        }
+
+        function sleep() {
+            state.energy = 100;
+            updateUI();
+        }
+    </script>
+</body>
+</html>
