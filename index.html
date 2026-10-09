@@ -227,108 +227,100 @@
     <div id="logs" class="logs">Игра началась! Развивайся.</div>
 
     <script>
-        // Инициализация Telegram Web App
-        const tg = window.Telegram.WebApp;
-        tg.expand(); // Расширяем на весь экран
+// Инициализация Telegram Web App
+const tg = window.Telegram.WebApp;
+tg.expand(); // Расширяем на весь экран
 
-        // Отображение имени пользователя из ТГ
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name;
-        }
+// Отображение имени пользователя из ТГ
+if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+    document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name;
+}
 
-        // Состояние игры (сохраняется в localStorage)
-        let gameState = JSON.parse(localStorage.getItem('tg_life_sim_state')) || {
-            balance: 100,
-            income: 0,
-            inventory: []
-        };
+// Состояние игры (сохраняется в localStorage)
+let gameState = JSON.parse(localStorage.getItem('tg_life_sim_state')) || {
+    balance: 100,
+    income: 0,
+    inventory: []
+};
 
-        function updateUI() {
-            document.getElementById('balance').innerText = '$' + gameState.balance;
-            document.getElementById('income').innerText = '$' + gameState.income + '/сек';
-            
-            // Проверка доступности кнопок по деньгам
-            document.getElementById('buy-cafe').disabled = gameState.balance < 100;
-            document.getElementById('buy-shop').disabled = gameState.balance < 350;
-            document.getElementById('buy-shopd').disabled = gameState.balance < 700;
-            document.getElementById('buy-sto').disabled = gameState.balance < 1900;
-            
-            if (gameState.inventory.includes('bike')) {
-                document.getElementById('buy-bike').innerText = 'В гараже';
-                document.getElementById('buy-bike').disabled = true;
-            } else {
-                document.getElementById('buy-bike').disabled = gameState.balance < 30;
-            }
+function updateUI() {
+    // 1. Обновляем текстовые показатели
+    document.getElementById('balance').innerText = '$' + gameState.balance;
+    document.getElementById('income').innerText = '$' + gameState.income + '/сек';
 
-            if (gameState.inventory.includes('car')) {
-                document.getElementById('buy-car2101').innerText = 'В гараже';
-                document.getElementById('buy-car2101').disabled = true;
-            } else {
-                document.getElementById('buy-car2101').disabled = gameState.balance < 250;
-            }
-            
-            if (gameState.inventory.includes('car')) {
-                document.getElementById('buy-carvesta').innerText = 'В гараже';
-                document.getElementById('buy-carvesta').disabled = true;
-            } else {
-                document.getElementById('buy-carvesta').disabled = gameState.balance < 750;
-                }
-            
-            if (gameState.inventory.includes('car')) {
-                document.getElementById('buy-care39').innerText = 'В гараже';
-                document.getElementById('buy-care39').disabled = true;
-            } else {
-                document.getElementById('buy-care39').disabled = gameState.balance < 1150;
-                }
-                
-            localStorage.setItem('tg_life_sim_state', JSON.stringify(gameState));
-        }
+    // 2. Проверка доступности кнопок бизнеса (Исправлены ID элементов)
+    if(document.getElementById('buy-cafe')) document.getElementById('buy-cafe').disabled = gameState.balance < 100;
+    if(document.getElementById('buy-shop')) document.getElementById('buy-shop').disabled = gameState.balance < 350;
+    if(document.getElementById('buy-shopd')) document.getElementById('buy-shopd').disabled = gameState.balance < 700;
+    if(document.getElementById('buy-sto')) document.getElementById('buy-sto').disabled = gameState.balance < 1900;
 
-        function log(message) {
-            document.getElementById('logs').innerText = message;
-        }
+    // 3. Проверка гаража (Используем уникальные ID для каждого транспорта)
+    updateVehicleButton('buy-bike', 'bike', 30);
+    updateVehicleButton('buy-car2101', 'car2101', 250);
+    updateVehicleButton('buy-carvesta', 'carvesta', 750);
+    updateVehicleButton('buy-care39', 'care39', 1150);
 
-        function clickWork() {
-            gameState.balance += 1;
-            updateUI();
-        }
+    // 4. СОХРАНЕНИЕ ПРОГРЕССА (Теперь код гарантированно доходит до этой строчки)
+    localStorage.setItem('tg_life_sim_state', JSON.stringify(gameState));
+}
 
-        function buyAsset(id, price, incomePlus) {
-            if (gameState.balance >= price) {
-                gameState.balance -= price;
-                gameState.income += incomePlus;
-                log('Вы открыли бизнес!');
-                updateUI();
-            }
-        }
+// Вспомогательная функция для обновления кнопок в гараже
+function updateVehicleButton(buttonId, itemId, price) {
+    const btn = document.getElementById(buttonId);
+    if (!btn) return;
 
-        function buyItem(id, price, name) {
-            if (gameState.balance >= price && !gameState.inventory.includes(id)) {
-                gameState.balance -= price;
-                gameState.inventory.push(id);
-                log('Куплено имущество: ' + name);
-                updateUI();
-            }
-        }
+    if (gameState.inventory.includes(itemId)) {
+        btn.innerText = 'В гараже';
+        btn.disabled = true;
+    } else {
+        btn.disabled = gameState.balance < price;
+    }
+}
 
-        function switchTab(tab) {
-            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            
-            document.getElementById(tab + '-panel').classList.add('active');
-            event.currentTarget.classList.add('active');
-        }
+function log(message) {
+    document.getElementById('logs').innerText = message;
+}
 
-        // Каждую секунду начисляем доход
-        setInterval(() => {
-            if (gameState.income > 0) {
-                gameState.balance += gameState.income;
-                updateUI();
-            }
-        }, 1000);
+function clickWork() {
+    gameState.balance += 1;
+    updateUI();
+}
 
-        // Первый запуск интерфейса
+function buyAsset(id, price, incomePlus) {
+    if (gameState.balance >= price) {
+        gameState.balance -= price;
+        gameState.income += incomePlus;
+        log('Вы открыли бизнес!');
         updateUI();
-    </script>
-</body>
-</html>
+    }
+}
+
+function buyItem(id, price, name) {
+    if (gameState.balance >= price && !gameState.inventory.includes(id)) {
+        gameState.balance -= price;
+        gameState.inventory.push(id);
+        log('Куплено имущество: ' + name);
+        updateUI();
+    }
+}
+
+function switchTab(tab) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tab + '-panel').classList.add('active');
+    event.currentTarget.classList.add('active');
+}
+
+// Каждую секунду начисляем доход
+setInterval(() => {
+    if (gameState.income > 0) {
+        gameState.balance += gameState.income;
+        updateUI();
+    }
+}, 1000);
+
+// Первый запуск интерфейса
+updateUI();
+</script>
+ </body>
+    </html>
