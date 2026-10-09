@@ -259,18 +259,16 @@
         </div>
     </div>
 
-    <script>
-        // Инициализация Telegram WebApp API
-        const tg = window.Telegram.WebApp;
-        tg.expand(); // Расширяем приложение на весь экран
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
 
-        // Состояние игры
-        let gameState = {
-            balance: 0,
-            clickPower: 1,
-            passiveIncome: 0,
-            statusIndex: 0
-        };
+    let gameState = {
+        balance: 0,
+        clickPower: 1,
+        passiveIncome: 0,
+        statusIndex: 0
+    };
 
         // Статусы игрока и требования по капиталу для их достижения
         const statuses = [
