@@ -128,7 +128,109 @@
             overflow-y: auto;
             text-align: center;
         }
-    
+
+     /* Кнопка меню */
+.menu-burger-btn {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 10;
+    color: var(--tg-theme-text-color);
+    background: rgba(255,255,255,0.05);
+    padding: 4px 10px;
+    border-radius: 8px;
+    line-height: 1;
+}
+
+/* Смещаем заголовок чуть ниже или правее, чтобы кнопка не перекрывала текст */
+.header {
+    padding-top: 45px; /* Корректировка под кнопку */
+}
+
+/* Боковое меню */
+.side-menu {
+    position: fixed;
+    top: 0;
+    left: -260px; /* Изначально спрятано */
+    width: 240px;
+    height: 100%;
+    background: #111a24;
+    box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+    z-index: 100;
+    transition: left 0.3s ease;
+    padding: 20px;
+    box-sizing: border-box;
+}
+.side-menu.open {
+    left: 0;
+}
+.menu-close-btn {
+    text-align: right;
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--tg-theme-hint-color);
+}
+.menu-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 20px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 10px;
+}
+.menu-items {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.menu-item {
+    padding: 12px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+.menu-item:hover {
+    background: var(--tg-theme-button-color);
+}
+
+/* Модальные окна */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 110;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+.modal-content {
+    background: #1c2a38;
+    border-radius: 16px;
+    padding: 20px;
+    width: 100%;
+    max-width: 320px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.modal-stat-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 14px;
+}
+.modal-stat-row:last-of-type {
+    border-bottom: none;
+}
+
 /* >>> ВСЯ СЛЕДУЮЩАЯ ЧАСТЬ ВСТАВЛЯЕТСЯ СЮДА: <<< */
         /* Стили для уровня и прогресс-бара */
         .level-container {
@@ -168,6 +270,50 @@
     </style>
 </head>
 <body>
+ 
+<!-- Иконка бургер-меню -->
+<div class="menu-burger-btn" onclick="toggleMenu(true)">☰</div>
+
+<!-- Само боковое меню (шторка) -->
+<div id="side-menu" class="side-menu">
+    <div class="menu-close-btn" onclick="toggleMenu(false)">✕</div>
+    <div class="menu-title">Меню игры</div>
+    
+    <div class="menu-items">
+        <div class="menu-item" onclick="openMenuTab('menu-stats')">📊 Статистика</div>
+        <div class="menu-item" onclick="openMenuTab('menu-inventory')">🎒 Инвентарь</div>
+        <div class="menu-item" onclick="openMenuTab('menu-bank')">🏦 Банк</div>
+    </div>
+</div>
+
+<!-- Модальные окна для пунктов меню -->
+<div id="menu-modal-overlay" class="modal-overlay" onclick="closeMenuModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <!-- Контент Статистики -->
+        <div id="menu-stats" class="menu-panel">
+            <h3>📊 Личная статистика</h3>
+            <div class="modal-stat-row"><span>Текущий уровень:</span> <strong id="m-stat-level">0</strong></div>
+            <div class="modal-stat-row"><span>Текущий статус:</span> <strong id="m-stat-status">Бомж</strong></div>
+            <div class="modal-stat-row"><span>Общий баланс:</span> <strong id="m-stat-balance">$0</strong></div>
+            <div class="modal-stat-row"><span>Доход в секунду:</span> <strong id="m-stat-sec">$0</strong></div>
+            <div class="modal-stat-row"><span>Доход в минуту:</span> <strong id="m-stat-min">$0</strong></div>
+        </div>
+        
+        <!-- Контент Инвентаря -->
+        <div id="menu-inventory" class="menu-panel" style="display:none;">
+            <h3>🎒 Твой инвентарь</h3>
+            <p style="color: var(--tg-theme-hint-color); text-align:center;">Здесь пока пусто. Скоро тут появятся твои вещи!</p>
+        </div>
+        
+        <!-- Контент Банка -->
+        <div id="menu-bank" class="menu-panel" style="display:none;">
+            <h3>🏦 Национальный Банк</h3>
+            <p style="color: var(--tg-theme-hint-color); text-align:center;">Банк закрыт на техобслуживание. Функция появится позже.</p>
+        </div>
+        
+        <button class="action-btn" style="margin-top: 20px; width: 100%;" onclick="closeMenuModal()">Закрыть</button>
+    </div>
+</div>
 
     <div class="header">
         <div>Привет, <span id="username" class="username">Игрок</span>!</div>
@@ -358,6 +504,13 @@ function updateUI() {
     localStorage.setItem('tg_life_sim_state', JSON.stringify(gameState));
 }
 
+ // Если окно статистики открыто в данный момент — обновляем и там числа
+if (document.getElementById('menu-modal-overlay').style.display === 'flex' && document.getElementById('menu-stats').style.display === 'block') {
+    document.getElementById('m-stat-balance').innerText = '$' + gameState.balance.toLocaleString();
+    document.getElementById('m-stat-sec').innerText = '$' + gameState.income;
+    document.getElementById('m-stat-min').innerText = '$' + (gameState.income * 60).toLocaleString();
+}
+
 // Вспомогательная функция для обновления кнопок в гараже
 function updateVehicleButton(buttonId, itemId, price) {
     const btn = document.getElementById(buttonId);
@@ -406,6 +559,43 @@ function switchTab(tab) {
     if (event && event.currentTarget) {
         event.currentTarget.classList.add('active');
     }
+}
+
+ // Логика управления меню
+function toggleMenu(open) {
+    const menu = document.getElementById('side-menu');
+    if (open) {
+        menu.classList.add('open');
+    } else {
+        menu.classList.remove('open');
+    }
+}
+
+function openMenuTab(tabId) {
+    // Закрываем боковую шторку
+    toggleMenu(false);
+    
+    // Показываем оверлей
+    document.getElementById('menu-modal-overlay').style.display = 'flex';
+    
+    // Прячем все панели внутри модалки
+    document.querySelectorAll('.menu-panel').forEach(panel => panel.style.display = 'none');
+    
+    // Если выбрали статистику, обновляем данные в реальном времени
+    if (tabId === 'menu-stats') {
+        document.getElementById('m-stat-level').innerText = gameState.level;
+        document.getElementById('m-stat-status').innerText = getStatusName(gameState.level);
+        document.getElementById('m-stat-balance').innerText = '$' + gameState.balance.toLocaleString();
+        document.getElementById('m-stat-sec').innerText = '$' + gameState.income;
+        document.getElementById('m-stat-min').innerText = '$' + (gameState.income * 60).toLocaleString();
+    }
+    
+    // Включаем нужную панель
+    document.getElementById(tabId).style.display = 'block';
+}
+
+function closeMenuModal() {
+    document.getElementById('menu-modal-overlay').style.display = 'none';
 }
 
 // Каждую секунду начисляем доход
