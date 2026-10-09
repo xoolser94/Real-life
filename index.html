@@ -135,6 +135,7 @@
             margin-top: 8px;
             font-size: 14px;
         }
+     
         .status-badge {
             display: inline-block;
             background: var(--tg-theme-button-color);
@@ -147,6 +148,7 @@
             margin-left: 5px;
             vertical-align: middle;
         }
+     
         .progress-bar-bg {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 6px;
@@ -301,6 +303,7 @@ function addXp(amount) {
         gameState.xp = 0;
         return;
     }
+ 
     gameState.xp += amount;
     let nextLevelXp = getNextLevelXp(gameState.level);
 
@@ -311,7 +314,6 @@ function addXp(amount) {
         log(`🎉 Поздравляем! Вы достигли ${gameState.level} уровня!`);
         if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
     }
-}
 
 function getStatusName(level) {
     if (level >= 90) return 'Аристократ';
