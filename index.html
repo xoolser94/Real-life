@@ -314,596 +314,106 @@
         <!-- Контент Статистики -->
         <div id="menu-stats" class="menu-panel">
             <h3>📊 Личная статистика</h3>
-                     <div class="modal-stat-row"><span>Текущий уровень:</span> <strong id="m-stat-level">0</strong></div>
-            <div class="modal-stat-row"><span>Текущий статус:</span> <strong id="m-stat-status">Бомж</strong></div>
-            <div class="modal-stat-row"><span>Общий баланс:</span> <strong id="m-stat-balance">$0</strong></div>
-            <div class="modal-stat-row"><span>Доход в секунду:</span> <strong id="m-stat-sec">$0</strong></div>
-            <div class="modal-stat-row"><span>Доход в минуту:</span> <strong id="m-stat-min">$0</strong></div>
-        </div>
-        
-        <!-- Контент Инвентаря (Новая красивая сетка) -->
-        <div id="menu-inventory" class="menu-panel" style="display:none;">
-            <h3>🎒 Твой инвентарь</h3>
-            <div id="inventory-list"></div>
-        </div>
-        
-             <!-- Контент Банка (Налоги и Штрафы) -->
-        <div id="menu-bank" class="menu-panel" style="display:none;">
-            <div style="text-align: center; margin-bottom: 15px;">
-                <span style="font-size: 30px;">🏦</span>
-                <h3 style="margin: 5px 0 0 0;">Центральный Банк</h3>
-                <small style="color: var(--tg-theme-hint-color);">Государственные пошлины и штрафы</small>
-            </div>
-            
-            <!-- Если штрафов нет -->
-            <div id="bank-clean" style="text-align: center; padding: 20px 0;">
-                <span style="color: #4caf50; font-size: 40px;">✔</span>
-                <p style="margin-top: 10px; font-size: 14px; color: var(--tg-theme-hint-color);">У вас нет задолженностей перед государством. Вы законопослушный гражданин!</p>
-            </div>
-
-            <!-- Если штраф есть -->
-            <div id="bank-debt" style="display: none; background: rgba(244, 67, 54, 0.1); border: 1px solid rgba(244, 67, 54, 0.3); border-radius: 10px; padding: 12px; margin-top: 10px;">
-                <div style="color: #ff5252; font-weight: bold; font-size: 14px; margin-bottom: 5px;">⚠️ Обнаружено нарушение!</div>
-                <div id="bank-fine-reason" style="font-size: 13px; color: #eee; margin-bottom: 8px; line-height: 1.3;"></div>
-                <div style="display: flex; justify-content: space-between; font-size: 13px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px;">
-                    <span style="color: var(--tg-theme-hint-color);">Сумма к оплате:</span>
-                    <strong id="bank-fine-amount" style="color: #ff9800; font-size: 15px;">$0</strong>
+                                     <div class="modal-stat-row">
+                    <span>Текущий уровень:</span> 
+                    <strong id="m-stat-level">1</strong>
                 </div>
-                <small style="color: #ffaa00; font-size: 10px; display: block; margin-top: 4px;">🛑 Внимание: каждые 30 сек. капает пеня +15%!</small>
-                <button class="action-btn" style="background: #2ea44f; width: 100%; margin-top: 12px; padding: 10px;" onclick="payFine()">Оплатить штраф</button>
+                <div class="modal-stat-row">
+                    <span>Всего заработано:</span> 
+                    <strong id="m-stat-total-money">1 000 ₽</strong>
+                </div>
+                <button class="action-btn" style="width:100%; margin-top:15px;" onclick="closeMenuModal()">Закрыть</button>
             </div>
-        </div>
 
-<div class="header">
-    <div>Привет, <span id="username" class="username">Игрок</span>!</div>
-    <div class="level-container">
-        Уровень: <span id="level-val">0</span> <span id="status-val" class="status-badge">Бомж</span>
-        <div class="progress-bar-bg">
-            <div id="progress-bar-fill" class="progress-bar-fill"></div>
-        </div>
-        <small style="color: var(--tg-theme-hint-color); font-size: 10px;" id="xp-text">0 / 100 XP</small>
-    </div>
-</div>
-
-<div class="stats-grid">
-    <div class="stat-card">
-        <div>💵 Баланс</div>
-        <div id="balance" class="stat-val">$100</div>
-    </div>
-    <div class="stat-card">
-        <div>⏱ Пассивный доход</div>
-        <div id="income" class="stat-val">$0/сек</div>
-    </div>
-</div>
-
-<!-- Навигация: Добавлена новая вкладка Одежда -->
-<div class="nav-tabs">
-    <button class="tab-btn active" onclick="switchTab('work')">💼 Работа</button>
-    <button class="tab-btn" onclick="switchTab('business')">🏢 Бизнес</button>
-    <button class="tab-btn" onclick="switchTab('garage')">🚗 Гараж</button>
-    <button class="tab-btn" onclick="switchTab('wardrobe')">👔 Одежда</button>
-</div>
-
-<!-- Вкладка РАБОТА -->
-<div id="work-panel" class="panel active">
-    <div style="text-align:center; padding: 20px 0;">
-        <button class="action-btn" style="padding: 15px 30px; font-size: 16px;" onclick="clickWork()">👋 Работать руками (+$1)</button>
-    </div>
-</div>
-
-<!-- Вкладка БИЗНЕС -->
-<div id="business-panel" class="panel">
-    <div class="item-row">
-        <div>
-            <strong>☕ Кофейня <span id="count-cafe" class="count-badge">0</span>/25</strong><br>
-            <small>Доход: +$1/сек. Цена: $100</small>
-        </div>
-        <button id="buy-cafe" class="action-btn" onclick="buyAsset('cafe', 100, 1)">Купить</button>
-    </div>
-    <div class="item-row">
-        <div>
-            <strong>🛒 Супермаркет <span id="count-shop" class="count-badge">0</span>/25</strong><br>
-            <small>Доход: +$5/сек. Цена: $350</small>
-        </div>
-        <button id="buy-shop" class="action-btn" onclick="buyAsset('shop', 350, 5)">Купить</button>
-    </div>
-    <div class="item-row">
-        <div>
-            <strong>💅 Салон Красоты <span id="count-salon" class="count-badge">0</span>/10</strong><br>
-            <small>Доход: +$18/сек. Цена: $700</small>
-        </div>
-        <button id="buy-salon" class="action-btn" onclick="buyAsset('salon', 700, 18)">Купить</button>
-    </div>
-    <div class="item-row">
-        <div>
-            <strong>🔧 Автосервис <span id="count-sto" class="count-badge">0</span>/10</strong><br>
-            <small>Доход: +$32/сек. Цена: $1900</small>
-        </div>
-        <button id="buy-sto" class="action-btn" onclick="buyAsset('sto', 1900, 32)">Купить</button>
-    </div>
-</div>
-
-<!-- Вкладка ГАРАЖ (Добавлены люксовые машины) -->
-<div id="garage-panel" class="panel">
-    <div class="item-row">
-        <div>
-            <strong>🚲 Велосипед Stels</strong><br>
-            <small>Цена: $30</small>
-        </div>
-        <button id="buy-bike" class="action-btn" onclick="buyItem('bike', 30, 'Велосипед')">Купить</button>
-    </div>
-    <div class="item-row">
-        <div>
-            <strong>🚗 Lada 2101</strong><br>
-            <small>Цена: $250</small>
-        </div>
-        <button id="buy-car2101" class="action-btn" onclick="buyItem('car2101', 250, 'Lada 2101')">Купить</button>
-    </div>
-    <div class="item-row">
-        <div>
-            <strong>🚗 Lada Vesta</strong><br>
-            <small>Цена: $750</small>
-        </div>
-        <button id="buy-carvesta" class="action-btn" onclick="buyItem('carvesta', 750, 'Lada Vesta')">Купить</button>
-    </div>
-    <div class="item-row">
-        <div>
-            <strong>🚗 Bmw e39</strong><br>
-            <small>Цена: $1150</small>
-        </div>
-        <button id="buy-care39" class="action-btn" onclick="buyItem('care39', 1150, 'Bmw e39')">Купить</button>
-    </div>
-    <div class="item-row">
-        <div>
-            <strong>🏎️ Porsche 911 Turbo</strong><br>
-            <small>Цена: $5500</small>
-        </div>
-        <button id="buy-porsche" class="action-btn" onclick="buyItem('porsche', 5500, 'Porsche 911')">Купить</button>
-    </div>
-    <div class="item-row">
-        <div>
-            <strong>🚀 Lamborghini Aventador</strong><br>
-            <small>Цена: $15000</small>
-        </div>
-        <button id="buy-lambo" class="action-btn" onclick="buyItem('lambo', 15000, 'Lamborghini')">Купить</button>
-    </div>
-    <div class="item-row">
-        <div>
-            <strong>👑 Rolls-Royce Phantom</strong><br>
-            <small>Цена: $45000</small>
-        </div>
-        <button id="buy-rolls" class="action-btn" onclick="buyItem('rolls', 45000, 'Rolls-Royce')">Купить</button>
-    </div>
-</div>
-
-<!-- Новая вкладка ОДЕЖДА -->
-<div id="wardrobe-panel" class="panel">
-    <div class="item-row">
-        <div>
-            <strong>👕 Рваная футболка</strong><br>
-            <small>Бонус: +0% XP. Цена: $10</small>
-        </div>
-        <button id="buy-cloth_tshirt" class="action-btn" onclick="buyItem('cloth_tshirt', 10, 'Рваная футболка')">Купить</button>
-    </div>
-    <div class="item-row">
-        <div>
-            <strong>CN Спортивный костюм Abibas</strong><br>
-            <small>Бонус: +10% XP. Цена: $80</small>
-        </div>
-        <button id="buy-cloth_sport" class="action-btn" onclick="buyItem('cloth_sport', 80, 'Костюм Abibas')">Купить</button>
-    </div>
-    <div class="item-row">
-        <div>
-            <strong>🧥 Стильное пальто</strong><br>
-            <small>Бонус: +25% XP. Цена: $400</small>
-        </div>
-        <button id="buy-cloth_coat" class="action-btn" onclick="buyItem('cloth_coat', 400, 'Стильное пальто')">Купить</button>
-    </div>
-    <div class="item-row">
-        <div>
-            <strong>💼 Деловой костюм Тройка</strong><br>
-            <small>Бонус: +60% XP. Цена: $1800</small>
-        </div>
-        <button id="buy-cloth_suit" class="action-btn" onclick="buyItem('cloth_suit', 1800, 'Костюм Тройка')">Купить</button>
-    </div>
-    <div class="item-row">
-        <div>
-            <strong>👑 Смокинг Gucci с бриллиантами</strong><br>
-            <small>Бонус: +150% XP. Цена: $8500</small>
-        </div>
-        <button id="buy-cloth_gucci" class="action-btn" onclick="buyItem('cloth_gucci', 8500, 'Смокинг Gucci')">Купить</button>
-    </div>
-</div>
-
-<div id="logs" class="logs">Игра началась! Развивайся.</div>
-
-<script>
- 
-const tg = window.Telegram.WebApp;
-tg.expand();
-
-if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-    document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name;
-}
-
-// Конфиг максимальных лимитов для бизнеса
-const businessLimits = { cafe: 25, shop: 25, salon: 10, sto: 10 };
-
-// Словарь красивых названий для карточек инвентаря
-const itemNames = {
-    'bike': '🚲 Велосипед Stels',
-    'car2101': '🚗 Lada 2101',
-    'carvesta': '🚗 Lada Vesta',
-    'care39': '🚗 Bmw e39',
-    'porsche': '🏎️ Porsche emergency services Turbo',
-    'lambo': '🚀 Lamborghini Aventador',
-    'rolls': '👑 Rolls-Royce Phantom',
-    'cloth_tshirt': '👕 Рваная футболка',
-    'cloth_sport': '👟 Костюм Abibas',
-    'cloth_coat': '🧥 Стильное пальто',
-    'cloth_suit': '💼 Костюм Тройка',
-    'cloth_gucci': '👑 Смокинг Gucci'
-};
-
-// Состояние игры
-let loadedState = JSON.parse(localStorage.getItem('tg_life_sim_state')) || {};
-let gameState = {
-    balance: typeof loadedState.balance === 'number' ? loadedState.balance : 100,
-    income: typeof loadedState.income === 'number' ? loadedState.income : 0,
-    level: typeof loadedState.level === 'number' ? loadedState.level : 0,
-    xp: typeof loadedState.xp === 'number' ? loadedState.xp : 0,
-    inventory: Array.isArray(loadedState.inventory) ? loadedState.inventory : [],
-    businesses: loadedState.businesses || { cafe: 0, shop: 0, salon: 0, sto: 0 },
-    // НОВЫЕ ПЕРЕМЕННЫЕ ДЛЯ ШТРАФОВ
-    activeFine: loadedState.activeFine || null, // Текст штрафа
-    fineAmount: typeof loadedState.fineAmount === 'number' ? loadedState.fineAmount : 0 // Сумма штрафа
-};
-
-// Сбалансированная экспоненциальная формула уровней
-function getNextLevelXp(level) {
-    return Math.round(100 + (level * 150) + (Math.pow(level, 1.5) * 20));
-}
-
-function addXp(amount) {
-    if (gameState.level >= 100) {
-        gameState.level = 100;
-        gameState.xp = 0;
-        return;
-    }
-
-    // Бонусы к получаемому опыту от шмоток
-    let xpMultiplier = 1.0;
-    if (gameState.inventory.includes('cloth_sport')) xpMultiplier += 0.10;
-    if (gameState.inventory.includes('cloth_coat')) xpMultiplier += 0.25;
-    if (gameState.inventory.includes('cloth_suit')) xpMultiplier += 0.60;
-    if (gameState.inventory.includes('cloth_gucci')) xpMultiplier += 1.50;
-
-    gameState.xp += Math.round(amount * xpMultiplier);
-    
-    let nextLevelXp = getNextLevelXp(gameState.level);
-    while (gameState.xp >= nextLevelXp && gameState.level < 100) {
-        gameState.xp -= nextLevelXp;
-        gameState.level++;
-        nextLevelXp = getNextLevelXp(gameState.level);
-        log(`🎉 Поздравляем! Вы достигли ${gameState.level} уровня!`);
-        if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-    }
-}
-
-function getStatusName(level) {
-    if (level >= 90) return 'Аристократ';
-    if (level >= 60) return 'Олигарх';
-    if (level >= 30) return 'Бизнесмен';
-    if (level >= 10) return 'Работяга';
-    return 'Бомж';
-}
-
-function updateUI() {
-
-// База возможных штрафов для каждого бизнеса
-const fineEvents = {
-    cafe: [
-        { text: "☕ В вашей кофейне СЭС обнаружила просроченное молоко для капучино!", baseCost: 40 },
-        { text: "☕ Посетитель пожаловался на таракана в эклере. Судебный иск!", baseCost: 60 }
-    ],
-    shop: [
-        { text: "🛒 Налоговая проверка выявила торговлю без кассовых чеков в супермаркете!", baseCost: 150 },
-        { text: "🛒 Пожарная инспекция закрывает супермаркет за заблокированный запасной выход!", baseCost: 200 }
-    ],
-    salon: [
-        { text: "💅 В салоне красоты мастера не стерилизовали инструменты для маникюра!", baseCost: 350 },
-        { text: "💅 Клиентка получила химический ожог при окрашивании волос. Компенсация!", baseCost: 450 }
-    ],
-    sto: [
-        { text: "🔧 В вашем автосервисе завелись мыши, которые перегрызли проводку дорогой машины клиента!", baseCost: 800 },
-        { text: "🔧 Экологический надзор оштрафовал автосервис за слив машинного масла в ливневку!", baseCost: 1100 }
-    ]
-};
-
-// Функция генерации случайного штрафа
-function checkForFines() {
-    // Если штраф уже есть или у игрока \$0, новый штраф не приходит
-    if (gameState.fineAmount > 0 || gameState.balance <= 0) return;
-
-    // Ищем бизнесы, которых больше или равно 5
-    let eligibleBiz = [];
-    for (let key in gameState.businesses) {
-        if (gameState.businesses[key] >= 5) {
-            eligibleBiz.push(key);
-        }
-    }
-
-    // Если таких бизнесов нет — выходим
-    if (eligibleBiz.length === 0) return;
-
-    // Шанс 4% при каждой проверке
-    if (Math.random() > 0.04) return;
-
-    // Выбираем случайный бизнес из тех, где >= 5 штук
-    let randomBizKey = eligibleBiz[Math.floor(Math.random() * eligibleBiz.length)];
-    let possibleFines = fineEvents[randomBizKey];
-    let selectedFine = possibleFines[Math.floor(Math.random() * possibleFines.length)];
-
-    // Расчет штрафа: базовая стоимость * количество этих бизнесов (чем больше сеть, тем выше штраф)
-    let totalFine = selectedFine.baseCost * gameState.businesses[randomBizKey];
-    
-    // Защита: штраф не может быть больше 60% от текущих денег игрока, чтобы не уничтожить баланс
-    if (totalFine > gameState.balance * 0.6) {
-        totalFine = Math.round(gameState.balance * 0.4);
-    }
-
-    // Записываем штраф в систему
-    gameState.activeFine = selectedFine.text;
-    gameState.fineAmount = Math.round(totalFine);
-
-    log(`🚨 Внимание! Государство выставило вам штраф! Срочно зайдите в Банк.`);
-    if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('warning');
-    
-    updateUI();
-}
-
-// Функция оплаты штрафа
-function payFine() {
-    if (gameState.balance >= gameState.fineAmount) {
-        gameState.balance -= gameState.fineAmount;
-        log(`💰 Вы успешно оплатили штраф в размере $${gameState.fineAmount}.`);
-        gameState.fineAmount = 0;
-        gameState.activeFine = null;
-        updateUI();
-        openMenuTab('menu-bank'); // Перерисовать окно банка
-    } else {
-        log("❌ У вас недостаточно денег на балансе для оплаты штрафа!");
-    }
-}
- 
-    document.getElementById('level-val').innerText = gameState.level;
-    document.getElementById('status-val').innerText = getStatusName(gameState.level);
-    const nextXpNeeded = getNextLevelXp(gameState.level);
-    
-    if (gameState.level >= 100) {
-        document.getElementById('xp-text').innerText = 'МАКСИМУМ';
-        document.getElementById('progress-bar-fill').style.width = '100%';
-    } else {
-        document.getElementById('xp-text').innerText = `${gameState.xp} / ${nextXpNeeded} XP`;
-        document.getElementById('progress-bar-fill').style.width = ((gameState.xp / nextXpNeeded) * 100) + '%';
-    }
-    
-    document.getElementById('balance').innerText = '\$' + gameState.balance;
-    document.getElementById('income').innerText = '\$' + gameState.income + '/сек';
-
-    // Проверка кнопок бизнеса
-    updateBizButton('buy-cafe', 'cafe', 100);
-    updateBizButton('buy-shop', 'shop', 350);
-    updateBizButton('buy-salon', 'salon', 700);
-    updateBizButton('buy-sto', 'sto', 1900);
-
-    // Проверка гаража и новых машин
-    updateVehicleButton('buy-bike', 'bike', 30);
-    updateVehicleButton('buy-car2101', 'car2101', 250);
-    updateVehicleButton('buy-carvesta', 'carvesta', 750);
-    updateVehicleButton('buy-care39', 'care39', 1150);
-    updateVehicleButton('buy-porsche', 'porsche', 5500);
-    updateVehicleButton('buy-lambo', 'lambo', 15000);
-    updateVehicleButton('buy-rolls', 'rolls', 45000);
-
-    // Проверка гардероба
-    updateVehicleButton('buy-cloth_tshirt', 'cloth_tshirt', 10);
-    updateVehicleButton('buy-cloth_sport', 'cloth_sport', 80);
-    updateVehicleButton('buy-cloth_coat', 'cloth_coat', 400);
-    updateVehicleButton('buy-cloth_suit', 'cloth_suit', 1800);
-    updateVehicleButton('buy-cloth_gucci', 'cloth_gucci', 8500);
-
-    // Живое обновление статистики в меню
-    if (document.getElementById('menu-modal-overlay').style.display === 'flex' && document.getElementById('menu-stats').style.display === 'block') {
-        document.getElementById('m-stat-balance').innerText = '\$' + gameState.balance;
-        document.getElementById('m-stat-sec').innerText = '\$' + gameState.income;
-        document.getElementById('m-stat-min').innerText = '\$' + (gameState.income * 60);
-        document.getElementById('m-stat-level').innerText = gameState.level;
-        document.getElementById('m-stat-status').innerText = getStatusName(gameState.level);
-    }
-
-    // Живое обновление банка в открытом меню
-    if (document.getElementById('menu-modal-overlay').style.display === 'flex' && document.getElementById('menu-bank').style.display === 'block') {
-        const cleanDiv = document.getElementById('bank-clean');
-        const debtDiv = document.getElementById('bank-debt');
-        if (gameState.fineAmount > 0) {
-            cleanDiv.style.display = 'none';
-            debtDiv.style.display = 'block';
-            document.getElementById('bank-fine-reason').innerText = gameState.activeFine;
-            document.getElementById('bank-fine-amount').innerText = '$' + gameState.fineAmount.toLocaleString();
-        } else {
-            cleanDiv.style.display = 'block';
-            debtDiv.style.display = 'none';
-        }
-    }
-
-    localStorage.setItem('tg_life_sim_state', JSON.stringify(gameState));
-}
-
-function updateBizButton(buttonId, bizId, price) {
-    const btn = document.getElementById(buttonId);
-    if (!btn) return;
-    
-    const currentCount = gameState.businesses[bizId] || 0;
-    const maxLimit = businessLimits[bizId];
-    
-    if (document.getElementById(`count-${bizId}`)) {
-        document.getElementById(`count-${bizId}`).innerText = currentCount;
-    }
-
-    if (currentCount >= maxLimit) {
-        btn.innerText = 'МАКСИМУМ';
-        btn.disabled = true;
-    } else {
-        btn.innerText = 'Купить';
-        btn.disabled = gameState.balance < price;
-    }
-}
-
-function updateVehicleButton(buttonId, itemId, price) {
-    const btn = document.getElementById(buttonId);
-    if (!btn) return;
-    if (gameState.inventory.includes(itemId)) {
-        btn.innerText = 'Куплено';
-        btn.disabled = true;
-    } else {
-        btn.innerText = 'Купить';
-        btn.disabled = gameState.balance < price;
-    }
-}
-
-function log(message) {
-    document.getElementById('logs').innerText = message;
-}
-
-function clickWork() {
-    gameState.balance += 1;
-    addXp(5);
-    updateUI();
-}
-
-function buyAsset(id, price, incomePlus) {
-    const currentCount = gameState.businesses[id] || 0;
-    const maxLimit = businessLimits[id];
-
-    if (currentCount >= maxLimit) {
-        log('Достигнут лимит для этого бизнеса!');
-        return;
-    }
-
-    if (gameState.balance >= price) {
-        gameState.balance -= price;
-        gameState.income += incomePlus;
-        gameState.businesses[id] = currentCount + 1;
-        log(`Куплено предприятие! Всего: ${gameState.businesses[id]}/${maxLimit}`);
-        updateUI();
-    }
-}
-
-function buyItem(id, price, name) {
-    if (gameState.balance >= price && !gameState.inventory.includes(id)) {
-        gameState.balance -= price;
-        gameState.inventory.push(id);
-        log('Куплено имущество: ' + name);
-        updateUI();
-    }
-}
-
-function switchTab(tab) {
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(tab + '-panel').classList.add('active');
-    
-    // Подсвечиваем активную кнопку
-    if (event && event.currentTarget) {
-        event.currentTarget.classList.add('active');
-    }
-}
-
-function toggleMenu(open) {
-    const menu = document.getElementById('side-menu');
-    if (open) menu.classList.add('open');
-    else menu.classList.remove('open');
-}
-
-function openMenuTab(tabId) {
-    toggleMenu(false);
-    document.getElementById('menu-modal-overlay').style.display = 'flex';
-    document.querySelectorAll('.menu-panel').forEach(panel => panel.style.display = 'none');
-    
-    if (tabId === 'menu-stats') {
-        document.getElementById('m-stat-level').innerText = gameState.level;
-        document.getElementById('m-stat-status').innerText = getStatusName(gameState.level);
-        document.getElementById('m-stat-balance').innerText = '\$' + gameState.balance;
-        document.getElementById('m-stat-sec').innerText = '\$' + gameState.income;
-        document.getElementById('m-stat-min').innerText = '\$' + (gameState.income * 60);
-    }
-
-    // Если открыли Банк — проверяем штрафы и обновляем UI
-    if (tabId === 'menu-bank') {
-        const cleanDiv = document.getElementById('bank-clean');
-        const debtDiv = document.getElementById('bank-debt');
-        
-        if (gameState.fineAmount > 0) {
-            cleanDiv.style.display = 'none';
-            debtDiv.style.display = 'block';
-            document.getElementById('bank-fine-reason').innerText = gameState.activeFine;
-            document.getElementById('bank-fine-amount').innerText = '$' + gameState.fineAmount.toLocaleString();
-        } else {
-            cleanDiv.style.display = 'block';
-            debtDiv.style.display = 'none';
-        }
-    }
-
-    // Генерируем красивую плиточную сетку для инвентаря
-    if (tabId === 'menu-inventory') {
-        const listContainer = document.getElementById('inventory-list');
-        if (gameState.inventory.length === 0) {
-            listContainer.innerHTML = `<p style="color: var(--tg-theme-hint-color); text-align:center; font-size: 13px; margin: 20px 0;">У тебя пока нет купленного имущества.<br>Загляни в Гараж или Одежду! 😉</p>`;
-        } else {
-            listContainer.innerHTML = `
+            <!-- Контент Инвентаря -->
+            <div id="menu-inventory" class="menu-panel" style="display: none;">
+                <h3>🎒 Ваш инвентарь</h3>
                 <div class="inventory-grid">
-                    ${gameState.inventory.map(itemId => {
-                        const readableName = itemNames[itemId] || itemId;
-                        return `<div class="inventory-card">${readableName}</div>`;
-                    }).join('')}
+                    <div class="inventory-card">🍏 Яблоко (2 шт)</div>
+                    <div class="inventory-card">🥤 Энергетик (1 шт)</div>
                 </div>
-            `;
+                <button class="action-btn" style="width:100%; margin-top:15px;" onclick="closeMenuModal()">Закрыть</button>
+            </div>
+
+            <!-- Контент Банка -->
+            <div id="menu-bank" class="menu-panel" style="display: none;">
+                <h3>🏦 Банковский счет</h3>
+                <div class="modal-stat-row">
+                    <span>Вклад в банке:</span> 
+                    <strong id="m-bank-deposit">0 ₽</strong>
+                </div>
+                <button class="action-btn" style="width:100%; margin-top:15px;" onclick="closeMenuModal()">Закрыть</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Основной скрипт управления игрой -->
+    <script>
+        // Инициализация Telegram Web App API
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.expand(); // Разворачиваем приложение на весь экран
+            if (tg.initDataUnsafe?.user?.first_name) {
+                // Подставляем имя пользователя из Telegram
+                document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name;
+            }
         }
-    }
-    
-    document.getElementById(tabId).style.display = 'block';
-}
 
-function closeMenuModal() {
-    document.getElementById('menu-modal-overlay').style.display = 'none';
-}
+        // Функция открытия/закрытия боковой шторки меню
+        function toggleMenu(open) {
+            const sideMenu = document.getElementById('side-menu');
+            if (open) {
+                sideMenu.classList.add('open');
+            } else {
+                sideMenu.classList.remove('open');
+            }
+        }
 
-// ТАЙМЕР 1: Каждую секунду начисляет пассивный доход и опыт
-setInterval(() => {
-    if (gameState.income > 0) {
-        gameState.balance += gameState.income;
-        let passiveXp = Math.max(1, Math.floor(gameState.income * 0.10));
-        addXp(passiveXp);
-    }
-    updateUI(); 
-}, 1000);
+        // Функция открытия окон (Статистика, Инвентарь, Банк) из бокового меню
+        function openMenuTab(tabId) {
+            toggleMenu(false); // Скрываем шторку меню
+            
+            // Скрываем абсолютно все панели в модальном окне
+            document.querySelectorAll('.menu-panel').forEach(panel => {
+                panel.style.display = 'none';
+            });
+            
+            // Показываем только ту панель, на которую нажали
+            document.getElementById(tabId).style.display = 'block';
+            // Открываем темный фон-оверлей
+            document.getElementById('menu-modal-overlay').style.display = 'flex';
+        }
 
-// ТАЙМЕР 2: Раз в 60 секунд проверяет штрафы и начисляет пеню
-setInterval(() => {
-    // 1. Проверяем, нагрянет ли новая проверка
-    checkForFines();
+        // Функция закрытия модального окна
+        function closeMenuModal() {
+            document.getElementById('menu-modal-overlay').style.display = 'none';
+        }
 
-    // 2. Если штраф уже висит, начисляем 15% пени
-    if (gameState.fineAmount > 0) {
-        gameState.fineAmount = Math.round(gameState.fineAmount * 1.15);
-        updateUI();
-    }
-}, 60000); 
+        // Функция переключения главных вкладок (Работа / Магазин)
+        function switchMainTab(panelId) {
+            // Скрываем обе панели
+            document.querySelectorAll('.panel').forEach(panel => panel.classList.remove('active'));
+            // Снимаем подсветку с кнопок вкладок
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // Активируем нужную панель и подсвечиваем нажатую кнопку
+            document.getElementById(panelId).classList.add('active');
+            event.target.classList.add('active');
+        }
 
-// Первый запуск интерфейса при загрузке страницы
-updateUI();
- 
-</script>
+        // Вспомогательные функции для вывода логов на экран
+        function logMessage(text) {
+            document.getElementById('logs-output').innerText = text;
+        }
+
+        function doWork(reward, energyCost) {
+            logMessage(`Вы отлично поработали! Заработано +${reward} ₽`);
+        }
+
+        function buyItem(price) {
+            logMessage(`Вы купили предмет за ${price} ₽`);
+        }
+    </script>
 </body>
 </html>
