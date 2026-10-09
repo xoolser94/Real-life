@@ -128,12 +128,64 @@
             overflow-y: auto;
             text-align: center;
         }
+     /* НАЙДИТЕ ЭТУ СТРОКУ В КОДЕ (она ближе к началу файла): */
+        .logs {
+            margin-top: 15px;
+            font-size: 12px;
+            color: var(--tg-theme-hint-color);
+            max-height: 60px;
+            overflow-y: auto;
+            text-align: center;
+        }
+
+/* >>> ВСЯ СЛЕДУЮЩАЯ ЧАСТЬ ВСТАВЛЯЕТСЯ СЮДА: <<< */
+        /* Стили для уровня и прогресс-бара */
+        .level-container {
+            margin-top: 8px;
+            font-size: 14px;
+        }
+        .status-badge {
+            display: inline-block;
+            background: var(--tg-theme-button-color);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-left: 5px;
+            vertical-align: middle;
+        }
+        .progress-bar-bg {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            height: 8px;
+            width: 100%;
+            margin-top: 6px;
+            overflow: hidden;
+        }
+     
+        .progress-bar-fill {
+            background: #4caf50;
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
     </style>
 </head>
 <body>
 
     <div class="header">
-        Привет, <span id="username" class="username">Игрок</span>! Добро пожаловать в Симулятор Жизни.
+        <div>Привет, <span id="username" class="username">Игрок</span>!</div>
+        <div class="level-container">
+            Уровень: <span id="level-val">0</span> 
+            <span id="status-val" class="status-badge">Бомж</span>
+            <div class="progress-bar-bg">
+                <div id="progress-bar-fill" class="progress-bar-fill"></div>
+            </div>
+            <small style="color: var(--tg-theme-hint-color); font-size: 10px;" id="xp-text">0 / 100 XP</small>
+        </div>
     </div>
 
     <div class="stats-grid">
@@ -243,11 +295,55 @@ if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
 let gameState = JSON.parse(localStorage.getItem('tg_life_sim_state')) || {
     balance: 100,
     income: 0,
+    level: 0,
+    xp: 0,
     inventory: []
 };
+     
+function getNextLevelXp(level) {
+    return level * 100 + 100;
+}
+
+function addXp(amount) {
+    if (gameState.level >= 100) {
+        gameState.level = 100;
+        gameState.xp = 0;
+        return;
+    }
+    gameState.xp += amount;
+    let nextLevelXp = getNextLevelXp(gameState.level);
+
+    while (gameState.xp >= nextLevelXp && gameState.level < 100) {
+        gameState.xp -= nextLevelXp;
+        gameState.level++;
+        nextLevelXp = getNextLevelXp(gameState.level);
+        log(`🎉 Поздравляем! Вы достигли ${gameState.level} уровня!`);
+        if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+    }
+}
+
+function getStatusName(level) {
+    if (level >= 90) return 'Аристократ';
+    if (level >= 60) return 'Олигарх';
+    if (level >= 30) return 'Бизнесмен';
+    if (level >= 10) return 'Работяга';
+    return 'Бомж';
+}
 
 function updateUI() {
     // 1. Обновляем текстовые показатели
+document.getElementById('level-val').innerText = gameState.level;
+    document.getElementById('status-val').innerText = getStatusName(gameState.level);
+
+    const nextXpNeeded = getNextLevelXp(gameState.level);
+    if (gameState.level >= 100) {
+        document.getElementById('xp-text').innerText = 'МАКСИМУМ';
+        document.getElementById('progress-bar-fill').style.width = '100%';
+    } else {
+        document.getElementById('xp-text').innerText = `${gameState.xp} / ${nextXpNeeded} XP`;
+        document.getElementById('progress-bar-fill').style.width = ((gameState.xp / nextXpNeeded) * 100) + '%';
+    }
+ 
     document.getElementById('balance').innerText = '$' + gameState.balance;
     document.getElementById('income').innerText = '$' + gameState.income + '/сек';
 
@@ -286,6 +382,7 @@ function log(message) {
 
 function clickWork() {
     gameState.balance += 1;
+ addXp(5);
     updateUI();
 }
 
@@ -318,9 +415,11 @@ function switchTab(tab) {
 setInterval(() => {
     if (gameState.income > 0) {
         gameState.balance += gameState.income;
-        updateUI();
+        addXp(gameState.income); // Начисляем опыт равный доходу
     }
+    updateUI(); // Вызываем каждую секунду, чтобы полоса опыта плавно двигалась
 }, 1000);
+    }
 
 // Первый запуск интерфейса
 updateUI();
