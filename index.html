@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Симулятор Жизни</title>
-    <!-- Подключаем Telegram WebApp API -->
     <script src="https://telegram.org"></script>
     <style>
         :root {
@@ -13,11 +12,9 @@
             --accent-color: #4ade80;
             --text-color: #ffffff;
             --text-muted: #94a3b8;
-            --button-click: #22c55e;
         }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
@@ -30,30 +27,24 @@
             user-select: none;
             -webkit-user-select: none;
         }
-
-        /* Шапка профиля */
         .header {
             width: 100%;
             background: var(--card-bg);
             padding: 16px;
             border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             margin-bottom: 20px;
             box-sizing: border-box;
         }
-
         .status-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
         }
-
         .status-title {
             font-size: 14px;
             color: var(--text-muted);
         }
-
         .status-value {
             font-weight: bold;
             color: var(--accent-color);
@@ -62,7 +53,6 @@
             border-radius: 20px;
             font-size: 14px;
         }
-
         .progress-bar-bg {
             background: #0f172a;
             height: 8px;
@@ -70,55 +60,43 @@
             overflow: hidden;
             width: 100%;
         }
-
         .progress-bar-fill {
             background: linear-gradient(90deg, #22c55e, #4ade80);
             height: 100%;
             width: 0%;
             transition: width 0.3s ease;
         }
-
-        /* Главный баланс */
         .balance-section {
             text-align: center;
             margin: 20px 0;
         }
-
         .balance-label {
             font-size: 14px;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
-
         .balance-amount {
             font-size: 38px;
             font-weight: 800;
-            color: #ffffff;
             margin: 5px 0;
         }
-
         .passive-income {
             font-size: 14px;
             color: var(--accent-color);
         }
-
-        /* Область кликера */
         .clicker-container {
             position: relative;
             margin: 20px 0;
             display: flex;
             justify-content: center;
-            align-items: center;
             width: 100%;
         }
-
         .click-button {
             width: 180px;
             height: 180px;
             background: radial-gradient(circle, #2e3b66 0%, #1e2640 100%);
             border-radius: 50%;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4), inset 0 4px 10px rgba(255,255,255,0.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -127,13 +105,9 @@
             transition: transform 0.05s ease;
             border: 4px solid #2d3758;
         }
-
         .click-button:active {
             transform: scale(0.95);
-            background: radial-gradient(circle, #3b4b82 0%, #1e2640 100%);
         }
-
-        /* Эффект вылетающих цифр */
         .floating-text {
             position: absolute;
             color: #ffffff;
@@ -141,36 +115,27 @@
             font-size: 24px;
             pointer-events: none;
             animation: floatUp 0.6s ease-out forwards;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
-
         @keyframes floatUp {
-            0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-100px) scale(1.2); }
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-100px); }
         }
-
-        /* Секция бизнесов */
         .businesses-section {
             width: 100%;
             margin-top: 15px;
             box-sizing: border-box;
         }
-
         .section-title {
             font-size: 18px;
             font-weight: bold;
             margin-bottom: 12px;
-            color: var(--text-color);
-            padding-left: 4px;
         }
-
         .business-list {
             display: flex;
             flex-direction: column;
             gap: 12px;
             width: 100%;
         }
-
         .business-card {
             background: var(--card-bg);
             border-radius: 14px;
@@ -178,31 +143,19 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            transition: opacity 0.3s ease;
         }
-
-        .business-info {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
         .biz-name {
             font-weight: bold;
             font-size: 16px;
         }
-
         .biz-stats {
             font-size: 12px;
             color: var(--text-muted);
         }
-
         .biz-count {
             color: var(--accent-color);
             font-weight: 600;
         }
-
         .buy-button {
             background: var(--accent-color);
             color: #000000;
@@ -210,15 +163,8 @@
             padding: 10px 16px;
             border-radius: 10px;
             font-weight: bold;
-            font-size: 14px;
             cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
         }
-
-        .buy-button:active {
-            transform: scale(0.95);
-        }
-
         .buy-button:disabled {
             background: #334155;
             color: #64748b;
@@ -228,7 +174,6 @@
 </head>
 <body>
 
-    <!-- Шапка профиля -->
     <div class="header">
         <div class="status-container">
             <span class="status-title">Ваш статус в жизни:</span>
@@ -239,38 +184,34 @@
         </div>
     </div>
 
-    <!-- Баланс -->
     <div class="balance-section">
         <div class="balance-label">Капитал</div>
         <div id="balance" class="balance-amount">0 ₽</div>
         <div id="income-speed" class="passive-income">+0 ₽/сек пассивно</div>
     </div>
 
-    <!-- Кнопка кликера -->
-    <div class="clicker-container" id="clicker-area">
+    <div class="clicker-container">
         <div class="click-button" id="click-btn">💼</div>
     </div>
 
-    <!-- Список бизнесов -->
     <div class="businesses-section">
         <div class="section-title">Купить источники дохода</div>
-        <div class="business-list" id="business-container">
-            <!-- Бизнесы генерируются через JS -->
-        </div>
+        <div class="business-list" id="business-container"></div>
     </div>
 
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
+    <script>
+        const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+        if (tg && typeof tg.expand === 'function') {
+            tg.expand();
+        }
 
-    let gameState = {
-        balance: 0,
-        clickPower: 1,
-        passiveIncome: 0,
-        statusIndex: 0
-    };
+        let gameState = {
+            balance: 0,
+            clickPower: 1,
+            passiveIncome: 0,
+            statusIndex: 0
+        };
 
-        // Статусы игрока и требования по капиталу для их достижения
         const statuses = [
             { name: "Бомж", req: 0 },
             { name: "Студент", req: 500 },
@@ -280,7 +221,6 @@
             { name: "Властелин Мира", req: Infinity }
         ];
 
-        // Список доступных бизнесов
         const businesses = [
             { id: 'job', name: 'Раздача листовок', cost: 50, income: 1, count: 0, icon: '📄' },
             { id: 'shawarma', name: 'Шаурмичная', cost: 300, income: 8, count: 0, icon: '🌯' },
@@ -290,30 +230,24 @@
             { id: 'oil', name: 'Нефтяная вышка', cost: 250000, income: 9000, count: 0, icon: '🛢️' }
         ];
 
-        // Элементы DOM
         const balanceEl = document.getElementById('balance');
         const incomeEl = document.getElementById('income-speed');
         const clickBtn = document.getElementById('click-btn');
-        const clickerArea = document.getElementById('clicker-area');
         const businessContainer = document.getElementById('business-container');
         const statusEl = document.getElementById('player-status');
         const progressBar = document.getElementById('progress-bar');
 
-        // Форматирование чисел для красивого вывода
         function formatMoney(num) {
             return num.toLocaleString('ru-RU') + ' ₽';
         }
 
-        // Обновление интерфейса
         function updateUI() {
             balanceEl.textContent = formatMoney(Math.floor(gameState.balance));
             incomeEl.textContent = `+${formatMoney(gameState.passiveIncome)}/сек пассивно`;
-            
             checkStatus();
             updateBusinessButtons();
         }
 
-        // Проверка и обновление социального статуса игрока
         function checkStatus() {
             let currentStatus = statuses[gameState.statusIndex];
             let nextStatus = statuses[gameState.statusIndex + 1];
@@ -321,113 +255,96 @@
             if (gameState.balance >= nextStatus.req && gameState.statusIndex < statuses.length - 2) {
                 gameState.statusIndex++;
                 currentStatus = statuses[gameState.statusIndex];
-nextStatus = statuses[gameState.statusIndex + 1];
+                nextStatus = statuses[gameState.statusIndex + 1];
+                if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+            }
+
+            statusEl.textContent = currentStatus.name;
+
+            if (nextStatus.req !== Infinity) {
+                let progress = ((gameState.balance - currentStatus.req) / (nextStatus.req - currentStatus.req)) * 100;
+                progressBar.style.width = `${Math.min(Math.max(progress, 0), 100)}%`;
+            } else {
+                progressBar.style.width = '100%';
+            }
+        }
+
+        function initBusinesses() {
+            businessContainer.innerHTML = '';
+            businesses.forEach((biz, index) => {
+                const card = document.createElement('div');
+                card.className = 'business-card';
+                card.innerHTML = `
+                    <div>
+                        <div class="biz-name">${biz.icon} ${biz.name} <span class="biz-count" id="count-${biz.id}"></span></div>
+                        <div class="biz-stats">Доход: +${biz.income} ₽/с</div>
+                    </div>
+                    <button class="buy-button" id="btn-${biz.id}" onclick="buyBusiness(${index})">
+                        ${formatMoney(biz.cost)}
+                    </button>
+                `;
+                businessContainer.appendChild(card);
+            });
+        }
+
+        function updateBusinessButtons() {
+            businesses.forEach(biz => {
+                const btn = document.getElementById(`btn-${biz.id}`);
+        function updateBusinessButtons() {
+            businesses.forEach(biz => {
+                const btn = document.getElementById(`btn-${biz.id}`);
+                const countEl = document.getElementById(`count-${biz.id}`);
                 
-// Вибрация при повышении уровня (поддерживается в ТГ)
-if (tg.HapticFeedback)
-tg.HapticFeedback.notificationOccurred('success');         
-}
+                if (btn && countEl) {
+                    btn.textContent = formatMoney(biz.cost);
+                    countEl.textContent = biz.count > 0 ? `x${biz.count}` : '';
+                    btn.disabled = gameState.balance < biz.cost;
+                }
+            });
+        }
+
+        window.buyBusiness = function(index) {
+            const biz = businesses[index];
+            if (gameState.balance >= biz.cost) {
+                gameState.balance -= biz.cost;
+                biz.count++;
+                gameState.passiveIncome += biz.income;
+                biz.cost = Math.floor(biz.cost * 1.15);
+                
+                if (tg && tg.HapticFeedback) {
+                    tg.HapticFeedback.impactOccurred('medium');
+                }
+                updateUI();
+            }
+        };
+
+        clickBtn.addEventListener('click', (e) => {
+            gameState.balance += gameState.clickPower;
             
-statusEl.textContent = currentStatus.name;
+            const floating = document.createElement('div');
+            floating.className = 'floating-text';
+            floating.style.left = `${e.clientX - 10}px`;
+            floating.style.top = `${e.clientY - 20}px`;
+            floating.textContent = `+${gameState.clickPower}₽`;
+            document.body.appendChild(floating);
             
-// Расчет прогресс-бара
-if (nextStatus.req !== Infinity) {
-let progress = ((gameState.balance - currentStatus.req) / (nextStatus.req - currentStatus.req)) * 100;
-progressBar.style.width = ${Math.min(Math.max(progress, 0), 100)}%;
-} else {
-progressBar.style.width = '100%';
-}
-}
-        
-// Создание карточек бизнесов в DOM
-function initBusinesses() {
-businessContainer.innerHTML = '';
-businesses.forEach((biz, index) => {
-const card = document.createElement('div');
-card.className = 'business-card';
-card.innerHTML = <div class="business-info"> <div class="biz-name">${biz.icon} ${biz.name} <span class="biz-count" id="count-${biz.id}">0</span></div> <div class="biz-stats">Доход: +${biz.income} ₽/с</div> </div> <button class="buy-button" id="btn-${biz.id}" onclick="buyBusiness(${index})"> ${formatMoney(biz.cost)} </button>;
-businessContainer.appendChild(card);
-});
-}
-        
-// Проверка доступности кнопок покупки (активны только если хватает денег)
-function updateBusinessButtons() {
-businesses.forEach(biz => {
-const btn = document.getElementById(btn-${biz.id});
-const countEl = document.getElementById(count-${biz.id});
-    
-if (btn && countEl) {
-btn.textContent = formatMoney(biz.cost);
-countEl.textContent = biz.count > 0 ? x${biz.count} : '';
-    
-if (gameState.balance >= biz.cost) {
-btn.disabled = false;
-} else {
-btn.disabled = true;
-}
-}
-});
-}
-        
-// Покупка бизнеса
-window.buyBusiness = function(index) {
-const biz = businesses[index];
-if (gameState.balance >= biz.cost) {
-gameState.balance -= biz.cost;
-biz.count++;
-gameState.passiveIncome += biz.income;
-    
-// Увеличение стоимости следующей покупки бизнеса на 15% (классика кликеров)
-biz.cost = Math.floor(biz.cost * 1.15);
-    
-// Легкая вибрация ТГ при покупке
-if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-    
-updateUI();
-}
-};
-        
-// Логика клика
-clickBtn.addEventListener('click', (e) => {
-gameState.balance += gameState.clickPower;
-    
-// Создание красивого текста вылетающих цифр
-createFloatingText(e.clientX, e.clientY, +${gameState.clickPower}₽);
-    
-// Легкая вибрация ТГ при каждом клике
-if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-    
-updateUI();
-});
-        
-// Создание эффекта вылетающего текста
-function createFloatingText(x, y, text) {
-const floating = document.createElement('div');
-floating.className = 'floating-text';
-// Позиционируем ровно в месте тапа
-floating.style.left = ${x - 10}px;
-floating.style.top = ${y - 20}px;
-floating.textContent = text;
-    
-document.body.appendChild(floating);
-    
-// Удаляем элемент после завершения анимации
-setTimeout(() => {
-floating.remove();
-}, 600);
-}
-        
-// Игровой цикл пассивного дохода (работает раз в секунду)
-setInterval(() => {
-if (gameState.passiveIncome > 0) {
-gameState.balance += gameState.passiveIncome;
-updateUI();
-}
-}, 1000);
-        
-// Старт игры
-initBusinesses();
-updateUI();
-        
-// Сообщаем Telegram, что приложение полностью готово к отрисовке
-tg.ready();
+            setTimeout(() => { floating.remove(); }, 600);
+            
+            if (tg && tg.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('light');
+            }
+            updateUI();
+        });
+
+        setInterval(() => {
+            if (gameState.passiveIncome > 0) {
+                gameState.balance += gameState.passiveIncome;
+                updateUI();
+            }
+        }, 1000);
+
+        initBusinesses();
+        updateUI();
+        if (tg && typeof tg.ready === 'function') {
+            tg.ready();
+        }
