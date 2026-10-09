@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+пппп<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -181,7 +181,7 @@
                 <strong>💅 Салон Красоты</strong><br>
                 <small>Доход: +$18/сек. Цена: $700</small>
             </div>
-            <button id="buy-shop" class="action-btn" onclick="buyAsset('shop', 700, 18)">Купить</button>
+            <button id="buy-shopd" class="action-btn" onclick="buyAsset('shop', 700, 18)">Купить</button>
         </div>
     </div>
 
@@ -199,21 +199,21 @@
                 <strong>🚗 Lada 2101</strong><br>
                 <small>Престиж. Цена: $250</small>
             </div>
-            <button id="buy-car" class="action-btn" onclick="buyItem('car', 250, 'Автомобиль')">Купить</button>
+            <button id="buy-car2101" class="action-btn" onclick="buyItem('car', 250, 'Автомобиль')">Купить</button>
         </div>
         <div class="item-row">
             <div>
                 <strong>🚗 Lada Vesta</strong><br>
                 <small>Престиж. Цена: $750</small>
             </div>
-            <button id="buy-car" class="action-btn" onclick="buyItem('car', 750, 'Автомобиль')">Купить</button>
+            <button id="buy-carvesta" class="action-btn" onclick="buyItem('car', 750, 'Автомобиль')">Купить</button>
         </div>
         <div class="item-row">
             <div>
                 <strong>🚗 Bmw e39</strong><br>
                 <small>Престиж. Цена: $1150</small>
             </div>
-            <button id="buy-car" class="action-btn" onclick="buyItem('car', 1150, 'Автомобиль')">Купить</button>
+            <button id="buy-care39" class="action-btn" onclick="buyItem('car', 1150, 'Автомобиль')">Купить</button>
         </div>
     </div>
 
@@ -241,8 +241,8 @@
             document.getElementById('income').innerText = '$' + gameState.income + '/сек';
             
             // Проверка доступности кнопок по деньгам
-            document.getElementById('buy-cafe').disabled = gameState.balance < 50;
-            document.getElementById('buy-shop').disabled = gameState.balance < 250;
+            document.getElementById('buy-cafe').disabled = gameState.balance < 100;
+            document.getElementById('buy-shop').disabled = gameState.balance < 350;
             
             if (gameState.inventory.includes('bike')) {
                 document.getElementById('buy-bike').innerText = 'В гараже';
@@ -252,12 +252,26 @@
             }
 
             if (gameState.inventory.includes('car')) {
-                document.getElementById('buy-car').innerText = 'В гараже';
-                document.getElementById('buy-car').disabled = true;
+                document.getElementById('buy-car2101').innerText = 'В гараже';
+                document.getElementById('buy-car2101').disabled = true;
             } else {
-                document.getElementById('buy-car').disabled = gameState.balance < 150;
+                document.getElementById('buy-car2101').disabled = gameState.balance < 250;
             }
-
+            
+            if (gameState.inventory.includes('car')) {
+                document.getElementById('buy-carvesta').innerText = 'В гараже';
+                document.getElementById('buy-carvesta').disabled = true;
+            } else {
+                document.getElementById('buy-carvesta').disabled = gameState.balance < 750;
+                }
+            
+            if (gameState.inventory.includes('car')) {
+                document.getElementById('buy-care39').innerText = 'В гараже';
+                document.getElementById('buy-care39').disabled = true;
+            } else {
+                document.getElementById('buy-care39').disabled = gameState.balance < 1150;
+                }
+                
             localStorage.setItem('tg_life_sim_state', JSON.stringify(gameState));
         }
 
