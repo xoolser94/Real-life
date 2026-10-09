@@ -737,7 +737,7 @@ function openMenuTab(tabId) {
                 <div class="inventory-grid">
                     ${gameState.inventory.map(itemId => {
                         const readableName = itemNames[itemId] || itemId;
-                        return `<div class="inventory-card">\${readableName}</div>`;
+                        return `<div class="inventory-card">${readableName}</div>`;
                     }).join('')}
                 </div>
             `;
