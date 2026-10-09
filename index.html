@@ -192,38 +192,41 @@
         </div>
     </div>
 
-    <!-- Вкладка ГАРАЖ -->
-    <div id="garage-panel" class="panel">
-        <div class="item-row">
-            <div>
-                <strong>🚲 Велосипед Stels</strong><br>
-                <small>Престиж. Цена: $30</small>
-            </div>
-            <button id="buy-bike" class="action-btn" onclick="buyItem('bike', 30, 'Велосипед')">Купить</button>
-        </div>
-        <div class="item-row">
-            <div>
-                <strong>🚗 Lada 2101</strong><br>
-                <small>Престиж. Цена: $250</small>
-            </div>
-            <button id="buy-car2101" class="action-btn" onclick="buyItem('car', 250, 'Автомобиль')">Купить</button>
-        </div>
-        <div class="item-row">
-            <div>
-                <strong>🚗 Lada Vesta</strong><br>
-                <small>Престиж. Цена: $750</small>
-            </div>
-            <button id="buy-carvesta" class="action-btn" onclick="buyItem('car', 750, 'Автомобиль')">Купить</button>
-        </div>
-        <div class="item-row">
-            <div>
-                <strong>🚗 Bmw e39</strong><br>
-                <small>Престиж. Цена: $1150</small>
-            </div>
-            <button id="buy-care39" class="action-btn" onclick="buyItem('car', 1150, 'Автомобиль')">Купить</button>
-        </div>
+   <!-- Вкладка ГАРАЖ -->
+<div id="garage-panel" class="panel">
+  <div class="item-row">
+    <div>
+      <strong>🚲 Велосипед Stels</strong><br>
+      <small>Престиж. Цена: $30</small>
     </div>
-
+    <!-- Передаем уникальный id 'bike' -->
+    <button id="buy-bike" class="action-btn" onclick="buyItem('bike', 30, 'Велосипед')">Купить</button> 
+  </div>
+  <div class="item-row">
+    <div>
+      <strong>🚗 Lada 2101</strong><br>
+      <small>Престиж. Цена: $250</small>
+    </div>
+    <!-- Передаем уникальный id 'car2101' -->
+    <button id="buy-car2101" class="action-btn" onclick="buyItem('car2101', 250, 'Lada 2101')">Купить</button> 
+  </div>
+  <div class="item-row">
+    <div>
+      <strong>🚗 Lada Vesta</strong><br>
+      <small>Престиж. Цена: $750</small>
+    </div>
+    <!-- Передаем уникальный id 'carvesta' -->
+    <button id="buy-carvesta" class="action-btn" onclick="buyItem('carvesta', 750, 'Lada Vesta')">Купить</button> 
+  </div>
+  <div class="item-row">
+    <div>
+      <strong>🚗 Bmw e39</strong><br>
+      <small>Престиж. Цена: $1150</small>
+    </div>
+    <!-- Передаем уникальный id 'care39' -->
+    <button id="buy-care39" class="action-btn" onclick="buyItem('care39', 1150, 'Bmw e39')">Купить</button> 
+  </div>
+</div>
     <div id="logs" class="logs">Игра началась! Развивайся.</div>
 
     <script>
