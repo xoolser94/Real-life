@@ -243,6 +243,7 @@
             // Проверка доступности кнопок по деньгам
             document.getElementById('buy-cafe').disabled = gameState.balance < 100;
             document.getElementById('buy-shop').disabled = gameState.balance < 350;
+            document.getElementById('buy-shopd').disabled = gameState.balance < 700;
             
             if (gameState.inventory.includes('bike')) {
                 document.getElementById('buy-bike').innerText = 'В гараже';
