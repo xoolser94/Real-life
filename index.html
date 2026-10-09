@@ -303,8 +303,10 @@
                 <!-- Контент Инвентаря -->
         <div id="menu-inventory" class="menu-panel" style="display:none;">
             <h3>🎒 Твой инвентарь</h3>
-            <p style="color: var(--tg-theme-hint-color); text-align:center;">Здесь пока пусто. Скоро тут появятся твои вещи!</p>
+            <!-- Сюда скрипт будет выводить список вещей -->
+            <div id="inventory-list" style="max-height: 200px; overflow-y: auto; margin-bottom: 10px;"></div>
         </div>
+
         
         <!-- Контент Банка -->
         <div id="menu-bank" class="menu-panel" style="display:none;">
@@ -489,6 +491,23 @@ if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
 // Конфиг максимальных лимитов для бизнеса
 const businessLimits = { cafe: 25, shop: 25, salon: 10, sto: 10 };
 
+// Словарь красивых названий для инвентаря
+const itemNames = {
+    'bike': '🚲 Велосипед Stels',
+    'car2101': '🚗 Lada 2101',
+    'carvesta': '🚗 Lada Vesta',
+    'care39': '🚗 Bmw e39',
+    'porsche': '🏎️ Porsche Turbo',
+    'lambo': '🚀 Lamborghini Aventador',
+    'rolls': '👑 Rolls-Royce Phantom',
+    'cloth_tshirt': '👕 Рваная футболка',
+    'cloth_sport': '👟 Спортивный костюм Abibas',
+    'cloth_coat': '🧥 Стильное пальто',
+    'cloth_suit': '💼 Деловой костюм Тройка',
+    'cloth_gucci': '👑 Смокинг Gucci'
+};
+
+ 
 // Состояние игры
 let loadedState = JSON.parse(localStorage.getItem('tg_life_sim_state')) || {};
 let gameState = {
@@ -675,10 +694,11 @@ function toggleMenu(open) {
 }
 
 function openMenuTab(tabId) {
-    toggleMenu(false);
+    toggleMenu(false); // Закрываем шторку меню
     document.getElementById('menu-modal-overlay').style.display = 'flex';
     document.querySelectorAll('.menu-panel').forEach(panel => panel.style.display = 'none');
     
+    // Если открыли Статистику
     if (tabId === 'menu-stats') {
         document.getElementById('m-stat-level').innerText = gameState.level;
         document.getElementById('m-stat-status').innerText = getStatusName(gameState.level);
@@ -686,6 +706,27 @@ function openMenuTab(tabId) {
         document.getElementById('m-stat-sec').innerText = '\$' + gameState.income;
         document.getElementById('m-stat-min').innerText = '\$' + (gameState.income * 60);
     }
+    
+    // Если открыли Инвентарь — генерируем список вещей
+    if (tabId === 'menu-inventory') {
+        const listContainer = document.getElementById('inventory-list');
+        
+        if (gameState.inventory.length === 0) {
+            listContainer.innerHTML = `<p style="color: var(--tg-theme-hint-color); text-align:center; font-size: 13px;">У вас пока нет купленного имущества. Загляните в Гараж или Одежду!</p>`;
+        } else {
+            // Перебираем массив инвентаря и создаем строки
+            listContainer.innerHTML = gameState.inventory.map(itemId => {
+                const readableName = itemNames[itemId] || itemId;
+                return `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 4px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px;">
+                        <span>${readableName}</span>
+                        <span style="color: #4caf50; font-size: 12px; font-weight: bold;">✔ В наличии</span>
+                    </div>
+                `;
+            }).join('');
+        }
+    }
+    
     document.getElementById(tabId).style.display = 'block';
 }
 
