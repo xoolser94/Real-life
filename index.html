@@ -300,6 +300,7 @@
         </div>
         
         <!-- Контент Инвентаря -->
+                <!-- Контент Инвентаря -->
         <div id="menu-inventory" class="menu-panel" style="display:none;">
             <h3>🎒 Твой инвентарь</h3>
             <p style="color: var(--tg-theme-hint-color); text-align:center;">Здесь пока пусто. Скоро тут появятся твои вещи!</p>
@@ -315,17 +316,16 @@
     </div>
 </div>
 
-    <div class="header">
-        <div>Привет, <span id="username" class="username">Игрок</span>!</div>
-        <div class="level-container">
-            Уровень: <span id="level-val">0</span> 
-            <span id="status-val" class="status-badge">Бомж</span>
-            <div class="progress-bar-bg">
-                <div id="progress-bar-fill" class="progress-bar-fill"></div>
-            </div>
-            <small style="color: var(--tg-theme-hint-color); font-size: 10px;" id="xp-text">0 / 100 XP</small>
+<div class="header">
+    <div>Привет, <span id="username" class="username">Игрок</span>!</div>
+    <div class="level-container">
+        Уровень: <span id="level-val">0</span> <span id="status-val" class="status-badge">Бомж</span>
+        <div class="progress-bar-bg">
+            <div id="progress-bar-fill" class="progress-bar-fill"></div>
         </div>
+        <small style="color: var(--tg-theme-hint-color); font-size: 10px;" id="xp-text">0 / 100 XP</small>
     </div>
+</div>
 
     <div class="stats-grid">
         <div class="stat-card">
@@ -352,36 +352,36 @@
     </div>
 
     <!-- Вкладка БИЗНЕС -->
-    <div id="business-panel" class="panel">
-        <div class="item-row">
-            <div>
-                <strong>☕️ Кофейня</strong><br>
-                <small>Доход: +$1/сек. Цена: $100</small>
-            </div>
-            <button id="buy-cafe" class="action-btn" onclick="buyAsset('cafe', 100, 1)">Купить</button>
+   <div id="business-panel" class="panel">
+    <div class="item-row">
+        <div>
+            <strong>☕ Кофейня <span id="count-cafe" class="count-badge">0</span>/25</strong><br>
+            <small>Доход: +$1/сек. Цена: $100</small>
         </div>
-        <div class="item-row">
-            <div>
-                <strong>🛒 Супермаркет</strong><br>
-                <small>Доход: +$5/сек. Цена: $350</small>
-            </div>
-            <button id="buy-shop" class="action-btn" onclick="buyAsset('shop', 350, 5)">Купить</button>
-        </div>
-         <div class="item-row">
-            <div>
-                <strong>💅 Салон Красоты</strong><br>
-                <small>Доход: +$18/сек. Цена: $700</small>
-            </div>
-            <button id="buy-shopd" class="action-btn" onclick="buyAsset('shop', 700, 18)">Купить</button>
-     </div>
-         <div class="item-row">
-            <div>
-                <strong>🔧 Автосервис</strong><br>
-                <small>Доход: +$32/сек. Цена: 1900</small>
-            </div>
-            <button id="buy-sto" class="action-btn" onclick="buyAsset('shop', 1900, 32)">Купить</button>
-        </div>
+        <button id="buy-cafe" class="action-btn" onclick="buyAsset('cafe', 100, 1)">Купить</button>
     </div>
+    <div class="item-row">
+        <div>
+            <strong>🛒 Супермаркет <span id="count-shop" class="count-badge">0</span>/25</strong><br>
+            <small>Доход: +$5/сек. Цена: $350</small>
+        </div>
+        <button id="buy-shop" class="action-btn" onclick="buyAsset('shop', 350, 5)">Купить</button>
+    </div>
+    <div class="item-row">
+        <div>
+            <strong>💅 Салон Красоты <span id="count-salon" class="count-badge">0</span>/10</strong><br>
+            <small>Доход: +$18/сек. Цена: $700</small>
+        </div>
+        <button id="buy-salon" class="action-btn" onclick="buyAsset('salon', 700, 18)">Купить</button>
+    </div>
+    <div class="item-row">
+        <div>
+            <strong>🔧 Автосервис <span id="count-sto" class="count-badge">0</span>/10</strong><br>
+            <small>Доход: +$32/сек. Цена: $1900</small>
+        </div>
+        <button id="buy-sto" class="action-btn" onclick="buyAsset('sto', 1900, 32)">Купить</button>
+    </div>
+</div>
 
    <!-- Вкладка ГАРАЖ -->
 <div id="garage-panel" class="panel">
@@ -421,26 +421,27 @@
     <div id="logs" class="logs">Игра началась! Развивайся.</div>
 
 <script>
-// Инициализация Telegram Web App
 const tg = window.Telegram.WebApp;
-tg.expand(); // Расширяем на весь экран
+tg.expand();
 
-// Отображение имени пользователя из ТГ
 if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
     document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name;
 }
 
-// Состояние игры (с защитой от поломки старых сохранений)
-let loadedState = JSON.parse(localStorage.getItem('tg_life_sim_state')) || {};
+// Конфиг максимальных лимитов для бизнеса
+const businessLimits = { cafe: 25, shop: 25, salon: 10, sto: 10 };
 
+// Состояние игры
+let loadedState = JSON.parse(localStorage.getItem('tg_life_sim_state')) || {};
 let gameState = {
     balance: typeof loadedState.balance === 'number' ? loadedState.balance : 100,
     income: typeof loadedState.income === 'number' ? loadedState.income : 0,
     level: typeof loadedState.level === 'number' ? loadedState.level : 0,
     xp: typeof loadedState.xp === 'number' ? loadedState.xp : 0,
-    inventory: Array.isArray(loadedState.inventory) ? loadedState.inventory : []
+    inventory: Array.isArray(loadedState.inventory) ? loadedState.inventory : [],
+    businesses: loadedState.businesses || { cafe: 0, shop: 0, salon: 0, sto: 0 }
 };
- 
+
 function getNextLevelXp(level) {
     return level * 100 + 100;
 }
@@ -453,7 +454,6 @@ function addXp(amount) {
     }
     gameState.xp += amount;
     let nextLevelXp = getNextLevelXp(gameState.level);
-    
     while (gameState.xp >= nextLevelXp && gameState.level < 100) {
         gameState.xp -= nextLevelXp;
         gameState.level++;
@@ -461,7 +461,7 @@ function addXp(amount) {
         log(`🎉 Поздравляем! Вы достигли ${gameState.level} уровня!`);
         if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
     }
-} // Сюда добавлена пропущенная закрывающая скобка!
+}
 
 function getStatusName(level) {
     if (level >= 90) return 'Аристократ';
@@ -472,11 +472,10 @@ function getStatusName(level) {
 }
 
 function updateUI() {
-    // 1. Обновляем текстовые показатели
     document.getElementById('level-val').innerText = gameState.level;
     document.getElementById('status-val').innerText = getStatusName(gameState.level);
-    
     const nextXpNeeded = getNextLevelXp(gameState.level);
+    
     if (gameState.level >= 100) {
         document.getElementById('xp-text').innerText = 'МАКСИМУМ';
         document.getElementById('progress-bar-fill').style.width = '100%';
@@ -488,30 +487,50 @@ function updateUI() {
     document.getElementById('balance').innerText = '\$' + gameState.balance;
     document.getElementById('income').innerText = '\$' + gameState.income + '/сек';
 
-    // 2. Проверка доступности кнопок бизнеса
-    if(document.getElementById('buy-cafe')) document.getElementById('buy-cafe').disabled = gameState.balance < 100;
-    if(document.getElementById('buy-shop')) document.getElementById('buy-shop').disabled = gameState.balance < 350;
-    if(document.getElementById('buy-shopd')) document.getElementById('buy-shopd').disabled = gameState.balance < 700;
-    if(document.getElementById('buy-sto')) document.getElementById('buy-sto').disabled = gameState.balance < 1900;
+    // Проверка доступности кнопок бизнеса и лимитов
+    updateBizButton('buy-cafe', 'cafe', 100);
+    updateBizButton('buy-shop', 'shop', 350);
+    updateBizButton('buy-salon', 'salon', 700);
+    updateBizButton('buy-sto', 'sto', 1900);
 
-    // 3. Проверка гаража
+    // Проверка гаража
     updateVehicleButton('buy-bike', 'bike', 30);
     updateVehicleButton('buy-car2101', 'car2101', 250);
     updateVehicleButton('buy-carvesta', 'carvesta', 750);
     updateVehicleButton('buy-care39', 'care39', 1150);
 
-    // 4. СОХРАНЕНИЕ ПРОГРЕССА
+    // Живое обновление статистики в меню
+    if (document.getElementById('menu-modal-overlay').style.display === 'flex' && document.getElementById('menu-stats').style.display === 'block') {
+        document.getElementById('m-stat-balance').innerText = '\$' + gameState.balance;
+        document.getElementById('m-stat-sec').innerText = '\$' + gameState.income;
+        document.getElementById('m-stat-min').innerText = '\$' + (gameState.income * 60);
+        document.getElementById('m-stat-level').innerText = gameState.level;
+        document.getElementById('m-stat-status').innerText = getStatusName(gameState.level);
+    }
+
     localStorage.setItem('tg_life_sim_state', JSON.stringify(gameState));
 }
 
- // Если окно статистики открыто в данный момент — обновляем и там числа
-if (document.getElementById('menu-modal-overlay').style.display === 'flex' && document.getElementById('menu-stats').style.display === 'block') {
-    document.getElementById('m-stat-balance').innerText = '$' + gameState.balance.toLocaleString();
-    document.getElementById('m-stat-sec').innerText = '$' + gameState.income;
-    document.getElementById('m-stat-min').innerText = '$' + (gameState.income * 60).toLocaleString();
+function updateBizButton(buttonId, bizId, price) {
+    const btn = document.getElementById(buttonId);
+    if (!btn) return;
+    
+    const currentCount = gameState.businesses[bizId] || 0;
+    const maxLimit = businessLimits[bizId];
+    
+    if (document.getElementById(`count-${bizId}`)) {
+        document.getElementById(`count-${bizId}`).innerText = currentCount;
+    }
+
+    if (currentCount >= maxLimit) {
+        btn.innerText = 'МАКСИМУМ';
+        btn.disabled = true;
+    } else {
+        btn.innerText = 'Купить';
+        btn.disabled = gameState.balance < price;
+    }
 }
 
-// Вспомогательная функция для обновления кнопок в гараже
 function updateVehicleButton(buttonId, itemId, price) {
     const btn = document.getElementById(buttonId);
     if (!btn) return;
@@ -534,10 +553,19 @@ function clickWork() {
 }
 
 function buyAsset(id, price, incomePlus) {
+    const currentCount = gameState.businesses[id] || 0;
+    const maxLimit = businessLimits[id];
+
+    if (currentCount >= maxLimit) {
+        log('Достигнут лимит для этого бизнеса!');
+        return;
+    }
+
     if (gameState.balance >= price) {
         gameState.balance -= price;
         gameState.income += incomePlus;
-        log('Вы открыли бизнес!');
+        gameState.businesses[id] = currentCount + 1;
+        log(`Куплено предприятие! Всего: ${gameState.businesses[id]}/${maxLimit}`);
         updateUI();
     }
 }
@@ -554,43 +582,30 @@ function buyItem(id, price, name) {
 function switchTab(tab) {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    
     document.getElementById(tab + '-panel').classList.add('active');
     if (event && event.currentTarget) {
         event.currentTarget.classList.add('active');
     }
 }
 
- // Логика управления меню
 function toggleMenu(open) {
     const menu = document.getElementById('side-menu');
-    if (open) {
-        menu.classList.add('open');
-    } else {
-        menu.classList.remove('open');
-    }
+    if (open) menu.classList.add('open');
+    else menu.classList.remove('open');
 }
 
 function openMenuTab(tabId) {
-    // Закрываем боковую шторку
     toggleMenu(false);
-    
-    // Показываем оверлей
     document.getElementById('menu-modal-overlay').style.display = 'flex';
-    
-    // Прячем все панели внутри модалки
     document.querySelectorAll('.menu-panel').forEach(panel => panel.style.display = 'none');
     
-    // Если выбрали статистику, обновляем данные в реальном времени
     if (tabId === 'menu-stats') {
         document.getElementById('m-stat-level').innerText = gameState.level;
         document.getElementById('m-stat-status').innerText = getStatusName(gameState.level);
-        document.getElementById('m-stat-balance').innerText = '$' + gameState.balance.toLocaleString();
-        document.getElementById('m-stat-sec').innerText = '$' + gameState.income;
-        document.getElementById('m-stat-min').innerText = '$' + (gameState.income * 60).toLocaleString();
+        document.getElementById('m-stat-balance').innerText = '\$' + gameState.balance;
+        document.getElementById('m-stat-sec').innerText = '\$' + gameState.income;
+        document.getElementById('m-stat-min').innerText = '\$' + (gameState.income * 60);
     }
-    
-    // Включаем нужную панель
     document.getElementById(tabId).style.display = 'block';
 }
 
@@ -598,16 +613,14 @@ function closeMenuModal() {
     document.getElementById('menu-modal-overlay').style.display = 'none';
 }
 
-// Каждую секунду начисляем доход
 setInterval(() => {
     if (gameState.income > 0) {
         gameState.balance += gameState.income;
-        addXp(gameState.income); // Начисляем опыт равный доходу
+        addXp(gameState.income);
     }
-    updateUI(); // Вызываем каждую секунду
+    updateUI();
 }, 1000);
 
-// Первый запуск интерфейса при загрузке страницы
 updateUI();
 </script>
  </body>
