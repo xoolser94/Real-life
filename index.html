@@ -501,7 +501,8 @@ let gameState = {
 };
 
 function getNextLevelXp(level) {
-    return level * 100 + 100;
+    // Чем выше уровень, тем сильнее возрастает сложность
+    return Math.round(100 + (level * 150) + (Math.pow(level, 1.5) * 20));
 }
 
 function addXp(amount) {
@@ -692,13 +693,18 @@ function closeMenuModal() {
     document.getElementById('menu-modal-overlay').style.display = 'none';
 }
 
+// Каждую секунду начисляем доход и сбалансированный опыт
 setInterval(() => {
     if (gameState.income > 0) {
         gameState.balance += gameState.income;
-        addXp(gameState.income);
+        
+        // Даем только 10% от дохода в виде опыта (минимум 1 XP, если доход есть)
+        let passiveXp = Math.max(1, Math.floor(gameState.income * 0.10));
+        addXp(passiveXp);
     }
     updateUI();
 }, 1000);
+
 
 updateUI();
 </script>
