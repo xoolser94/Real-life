@@ -274,7 +274,7 @@
 </div>
     <div id="logs" class="logs">Игра началась! Развивайся.</div>
 
-    <script>
+<script>
 // Инициализация Telegram Web App
 const tg = window.Telegram.WebApp;
 tg.expand(); // Расширяем на весь экран
@@ -285,14 +285,14 @@ if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
 }
 
 // Состояние игры (сохраняется в localStorage)
-let gameState = JSON.parse(localStorage.getItem('tg_life_sim_state')) || {
-    balance: 100,
-    income: 0,
-    level: 0,
-    xp: 0,
-    inventory: []
+let gameState = JSON.parse(localStorage.getItem('tg_life_sim_state')) || { 
+    balance: 100, 
+    income: 0, 
+    level: 0, 
+    xp: 0, 
+    inventory: [] 
 };
-     
+
 function getNextLevelXp(level) {
     return level * 100 + 100;
 }
@@ -303,10 +303,9 @@ function addXp(amount) {
         gameState.xp = 0;
         return;
     }
- 
     gameState.xp += amount;
     let nextLevelXp = getNextLevelXp(gameState.level);
-
+    
     while (gameState.xp >= nextLevelXp && gameState.level < 100) {
         gameState.xp -= nextLevelXp;
         gameState.level++;
@@ -314,6 +313,7 @@ function addXp(amount) {
         log(`🎉 Поздравляем! Вы достигли ${gameState.level} уровня!`);
         if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
     }
+} // Сюда добавлена пропущенная закрывающая скобка!
 
 function getStatusName(level) {
     if (level >= 90) return 'Аристократ';
@@ -325,9 +325,9 @@ function getStatusName(level) {
 
 function updateUI() {
     // 1. Обновляем текстовые показатели
-document.getElementById('level-val').innerText = gameState.level;
+    document.getElementById('level-val').innerText = gameState.level;
     document.getElementById('status-val').innerText = getStatusName(gameState.level);
-
+    
     const nextXpNeeded = getNextLevelXp(gameState.level);
     if (gameState.level >= 100) {
         document.getElementById('xp-text').innerText = 'МАКСИМУМ';
@@ -336,23 +336,23 @@ document.getElementById('level-val').innerText = gameState.level;
         document.getElementById('xp-text').innerText = `${gameState.xp} / ${nextXpNeeded} XP`;
         document.getElementById('progress-bar-fill').style.width = ((gameState.xp / nextXpNeeded) * 100) + '%';
     }
- 
-    document.getElementById('balance').innerText = '$' + gameState.balance;
-    document.getElementById('income').innerText = '$' + gameState.income + '/сек';
+    
+    document.getElementById('balance').innerText = '\$' + gameState.balance;
+    document.getElementById('income').innerText = '\$' + gameState.income + '/сек';
 
-    // 2. Проверка доступности кнопок бизнеса (Исправлены ID элементов)
+    // 2. Проверка доступности кнопок бизнеса
     if(document.getElementById('buy-cafe')) document.getElementById('buy-cafe').disabled = gameState.balance < 100;
     if(document.getElementById('buy-shop')) document.getElementById('buy-shop').disabled = gameState.balance < 350;
     if(document.getElementById('buy-shopd')) document.getElementById('buy-shopd').disabled = gameState.balance < 700;
     if(document.getElementById('buy-sto')) document.getElementById('buy-sto').disabled = gameState.balance < 1900;
 
-    // 3. Проверка гаража (Используем уникальные ID для каждого транспорта)
+    // 3. Проверка гаража
     updateVehicleButton('buy-bike', 'bike', 30);
     updateVehicleButton('buy-car2101', 'car2101', 250);
     updateVehicleButton('buy-carvesta', 'carvesta', 750);
     updateVehicleButton('buy-care39', 'care39', 1150);
 
-    // 4. СОХРАНЕНИЕ ПРОГРЕССА (Теперь код гарантированно доходит до этой строчки)
+    // 4. СОХРАНЕНИЕ ПРОГРЕССА
     localStorage.setItem('tg_life_sim_state', JSON.stringify(gameState));
 }
 
@@ -360,7 +360,6 @@ document.getElementById('level-val').innerText = gameState.level;
 function updateVehicleButton(buttonId, itemId, price) {
     const btn = document.getElementById(buttonId);
     if (!btn) return;
-
     if (gameState.inventory.includes(itemId)) {
         btn.innerText = 'В гараже';
         btn.disabled = true;
@@ -375,7 +374,7 @@ function log(message) {
 
 function clickWork() {
     gameState.balance += 1;
- addXp(5);
+    addXp(5);
     updateUI();
 }
 
@@ -400,8 +399,11 @@ function buyItem(id, price, name) {
 function switchTab(tab) {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    
     document.getElementById(tab + '-panel').classList.add('active');
-    event.currentTarget.classList.add('active');
+    if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
+    }
 }
 
 // Каждую секунду начисляем доход
@@ -410,11 +412,10 @@ setInterval(() => {
         gameState.balance += gameState.income;
         addXp(gameState.income); // Начисляем опыт равный доходу
     }
-    updateUI(); // Вызываем каждую секунду, чтобы полоса опыта плавно двигалась
+    updateUI(); // Вызываем каждую секунду
 }, 1000);
-    }
 
-// Первый запуск интерфейса
+// Первый запуск интерфейса при загрузке страницы
 updateUI();
 </script>
  </body>
