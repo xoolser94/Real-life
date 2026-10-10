@@ -147,13 +147,196 @@
     color: #ffd700;
 }
 
+        /* --- НОВЫЕ СТИЛИ ДЛЯ БОКОВОГО МЕНЮ И МОДАЛОК --- */
+
+/* Шапка с кнопкой меню */
+.header-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    background: rgba(255,255,255,0.05);
+    padding: 12px;
+    border-radius: 12px;
+    position: relative;
+}
+
+.menu-burger-btn {
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: var(--tg-theme-text-color);
+    font-size: 24px;
+    cursor: pointer;
+    padding: 4px 10px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-text {
+    flex: 1;
+    text-align: center;
+    padding-right: 35px; /* Балансировка центровки из-за кнопки */
+}
+
+/* Боковое меню (Sidebar) */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -280px; /* Спрятано за левым краем экрана */
+    width: 250px;
+    height: 100%;
+    background-color: #111a24;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.5);
+    transition: left 0.3s ease; /* Плавное выдвижение */
+    z-index: 1000;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.sidebar.open {
+    left: 0; /* Выдвигаем */
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.sidebar-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--tg-theme-button-color);
+}
+
+.close-sidebar-btn {
+    background: none;
+    border: none;
+    color: var(--tg-theme-hint-color);
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.sidebar-menu-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sidebar-item {
+    background: rgba(255,255,255,0.05);
+    color: var(--tg-theme-text-color);
+    border: none;
+    padding: 14px;
+    border-radius: 8px;
+    text-align: left;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Полупрозрачный задний фон */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    z-index: 900;
+}
+
+.overlay.active {
+    display: block;
+}
+
+/* Модальное окно статистики */
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 85%;
+    max-width: 400px;
+    background: #1c2a38;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+    display: none;
+    z-index: 1100;
+    opacity: 0;
+    transition: all 0.2s ease;
+}
+
+.modal.active {
+    display: block;
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+}
+
+.modal-header {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-align: center;
+    color: #ffd700;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 10px;
+}
+
+.modal-body {
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.stat-line {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
     </style>
 </head>
 <body>
+<!-- Вставить сразу после <body> -->
+<div id="overlay" class="overlay" onclick="closeSidebar(); closeModal();"></div>
 
-    <div class="header">
-        Привет, <span id="username" class="username">Игрок</span>! Добро пожаловать в Симулятор Жизни.
+<div id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+        <div class="sidebar-title">Навигация</div>
+        <button class="close-sidebar-btn" onclick="closeSidebar()">✕</button>
     </div>
+    <div class="sidebar-menu-list">
+        <button class="sidebar-item" onclick="openStatsModal()">📊 Статистика</button>
+        <button class="sidebar-item" onclick="showTechWorksNotice('🎰 Казино')">🎰 Казино</button>
+        <button class="sidebar-item" onclick="showTechWorksNotice('🏦 Банк')">🏦 Банк</button>
+    </div>
+</div>
+
+<div id="stats-modal" class="modal">
+    <div class="modal-header">📊 Статистика аккаунта</div>
+    <div class="modal-body" id="stats-modal-body"></div>
+    <div style="text-align: center;">
+        <button class="action-btn" onclick="closeModal()">Закрыть</button>
+    </div>
+</div>
+
+<div class="header-container">
+    <button class="menu-burger-btn" onclick="openSidebar()">☰</button>
+    <div class="header-text">
+        Привет, <span id="username" class="username">Игрок</span>!
+    </div>
+</div>
 
     <div class="stats-grid">
         <div class="stat-card">
@@ -384,10 +567,64 @@ function buyCarItem(id, price, name, incomePlus) {
    
         // Состояние игры (сохраняется в localStorage)
         let gameState = JSON.parse(localStorage.getItem('tg_life_sim_state')) || {
-            balance: 100,
-            income: 0,
-            inventory: []
-        };
+    balance: 100,
+    income: 0,
+    totalClicks: 0, 
+    businesses: { /* ... ваши бизнесы ... */ },
+    carsOwned: []
+};
+
+/* --- НОВЫЕ ФУНКЦИИ ДЛЯ МЕНЮ И ТЕХ.РАБОТ --- */
+
+function openSidebar() {
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('overlay').classList.add('active');
+    if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+}
+
+function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    if (!document.getElementById('stats-modal').classList.contains('active')) {
+        document.getElementById('overlay').classList.remove('active');
+    }
+}
+
+function showTechWorksNotice(moduleName) {
+    closeSidebar();
+    if (tg.showAlert) {
+        tg.showAlert(`Раздел "${moduleName}" временно закрыт на технические работы. Загляните позже!`);
+    } else {
+        alert(`Раздел "${moduleName}" временно закрыт на технические работы. Загляните позже!`);
+    }
+}
+
+function openStatsModal() {
+    closeSidebar();
+    
+    let totalBusinesses = 0;
+    for (let key in gameState.businesses) {
+        totalBusinesses += gameState.businesses[key].count;
+    }
+
+    const modalBody = document.getElementById('stats-modal-body');
+    modalBody.innerHTML = `
+        <div class="stat-line"><span>👤 Владелец:</span> <strong>${currentUsername || 'Игрок'}</strong></div>
+        <div class="stat-line"><span>💵 Текущий баланс:</span> <strong>$${formatMoney(gameState.balance)}</strong></div>
+        <div class="stat-line"><span>⏱ Пассивный доход:</span> <strong>$${formatMoney(gameState.income)}/сек</strong></div>
+        <div class="stat-line"><span>👋 Кликнуто руками:</span> <strong>${gameState.totalClicks} раз</strong></div>
+        <div class="stat-line"><span>🏢 Всего бизнесов:</span> <strong>${totalBusinesses} шт.</strong></div>
+        <div class="stat-line"><span>🚗 Машин в гараже:</span> <strong>${gameState.carsOwned.length} шт.</strong></div>
+    `;
+
+    document.getElementById('stats-modal').classList.add('active');
+    document.getElementById('overlay').classList.add('active');
+    if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+}
+
+function closeModal() {
+    document.getElementById('stats-modal').classList.remove('active');
+    document.getElementById('overlay').classList.remove('active');
+}
 
         function updateUI() {
             document.getElementById('balance').innerText = '$' + formatNumber(gameState.balance);
@@ -439,6 +676,7 @@ CARS_DATABASE.forEach(car => {
 
         function clickWork() {
             gameState.balance += 1;
+             gameState.totalClicks += 1;
             updateUI();
         }
 
