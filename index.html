@@ -155,6 +155,13 @@
         Привет, <span id="username" class="username">Игрок</span>! Добро пожаловать в Симулятор Жизни.
     </div>
 
+    <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; margin-bottom: 15px; font-size: 14px; font-weight: bold;">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+        <span id="level-display">⭐ Уровень: 1</span>
+        <span id="xp-display">XP: 0 / 100</span>
+    </div>
+</div>
+
     <div class="stats-grid">
         <div class="stat-card">
             <div>💵 Баланс</div>
@@ -368,17 +375,44 @@ function buyCarItem(id, price, name, incomePlus) {
     }
  }
    
-        // Состояние игры (сохраняется в localStorage)
-        let gameState = JSON.parse(localStorage.getItem('tg_life_sim_state')) || {
-            balance: 100,
-            income: 0,
-            inventory: []
-        };
+     // Состояние игры с сохранением уровня и опыта
+let gameState = JSON.parse(localStorage.getItem('tg_life_sim_state')) || {
+    balance: 100,
+    income: 0,
+    inventory: [],
+    level: 1,
+    xp: 0
+};
+
+// Функция расчета опыта: с каждым уровнем требование растет (1 ур = 100 XP, 50 ур = ~35 000 XP)
+function getRequiredXp(level) {
+    if (level >= 100) return 0;
+    return Math.floor(Math.pow(level, 1.5) * 100);
+}
+
+// Функция добавления опыта и автоматического повышения уровня
+function addXp(amount) {
+    if (gameState.level >= 100) return;
+
+    gameState.xp += amount;
+    let requiredXp = getRequiredXp(gameState.level);
+
+    while (gameState.xp >= requiredXp && gameState.level < 100) {
+        gameState.xp -= requiredXp;
+        gameState.level++;
+        log(`🎉 Уровень повышен! Ваш текущий уровень: ${gameState.level}`);
+        requiredXp = getRequiredXp(gameState.level);
+    }
+
+    if (gameState.level >= 100) gameState.xp = 0;
+}
 
         function updateUI() {
             document.getElementById('balance').innerText = '$' + gameState.balance;
             document.getElementById('income').innerText = '$' + gameState.income + '/сек';
-            
+            document.getElementById('level-display').innerText = `⭐ Уровень: ${gameState.level}`;
+document.getElementById('xp-display').innerText = `XP: ${Math.floor(gameState.xp)} / ${getRequiredXp(gameState.level)}`;
+
            // Проверка доступности кнопок по деньгам
 document.getElementById('buy-cafe').disabled = gameState.balance < 50;
 document.getElementById('buy-shop').disabled = gameState.balance < 250;
@@ -412,10 +446,11 @@ CARS_DATABASE.forEach(car => {
             document.getElementById('logs').innerText = message;
         }
 
-        function clickWork() {
-            gameState.balance += 1;
-            updateUI();
-        }
+       function clickWork() {
+    gameState.balance += 1;
+    addXp(1); // Добавляет 1 единицу опыта за каждый клик
+    updateUI();
+}
 
         function buyAsset(id, price, incomePlus) {
             if (gameState.balance >= price) {
@@ -445,13 +480,19 @@ CARS_DATABASE.forEach(car => {
 
               // ... здесь у вас заканчиваются другие функции (buyCarItem, switchTab и т.д.) ...
 
-        // Каждую секунду начисляем доход
-        setInterval(() => {
-            if (gameState.income > 0) {
-                gameState.balance += gameState.income;
-                updateUI();
-            }
-        }, 1000);
+      // Каждую секунду начисляем доход и опыт
+setInterval(() => {
+    if (gameState.income > 0) {
+        gameState.balance += gameState.income;
+
+        // Рассчитываем опыт: Math.log1p сглаживает огромные цифры дохода, 
+        // защищая прогресс от слишком быстрого взлета до 100 уровня
+        let xpGain = Math.log1p(gameState.income) * 1.5;
+        addXp(xpGain);
+        
+        updateUI();
+    }
+}, 1000);
 
         // ВОТ СЮДА ВСТАВЛЯЙТЕ ЭТИ СТРОЧКИ (в самый низ файла):
         initGarageDOM();
