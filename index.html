@@ -664,6 +664,8 @@ CARS_DATABASE.forEach(car => {
             }
         }, 1000);
 
+        initGarageDOM();
+        
         /* --- НОВЫЕ ФУНКЦИИ ДЛЯ МЕНЮ И ТЕХ.РАБОТ --- */
 
 function openSidebar() {
@@ -716,8 +718,6 @@ function closeModal() {
     document.getElementById('overlay').classList.remove('active');
 }
 
-        // ВОТ СЮДА ВСТАВЛЯЙТЕ ЭТИ СТРОЧКИ (в самый низ файла):
-        initGarageDOM();
         updateUI(); 
     </script>
 </body>
