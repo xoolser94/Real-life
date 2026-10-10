@@ -184,63 +184,63 @@
     <div class="item-row">
         <div>
             <strong>☕ Кофейня</strong><br>
-            <small>Доход: +$1/сек. Цена: $50</small>
+            <small>Доход: +$1/сек. Цена: $<span id="price-desc-cafe">50</span></small>
         </div>
         <button id="buy-cafe" class="action-btn" onclick="buyAsset('cafe', 50, 1)">Купить</button>
     </div>
     <div class="item-row">
         <div>
             <strong>🛒 Супермаркет</strong><br>
-            <small>Доход: +$5/сек. Цена: $250</small>
+            <small>Доход: +$5/сек. Цена: $<span id="price-desc-shop">250</span></small>
         </div>
         <button id="buy-shop" class="action-btn" onclick="buyAsset('shop', 250, 5)">Купить</button>
     </div>
     <div class="item-row">
         <div>
             <strong>🍕 Пиццерия</strong><br>
-            <small>Доход: +$15/сек. Цена: $1 500</small>
+            <small>Доход: +$15/сек. Цена: $<span id="price-desc-pizza">1500</span></small>
         </div>
         <button id="buy-pizza" class="action-btn" onclick="buyAsset('pizza', 1500, 15)">Купить</button>
     </div>
     <div class="item-row">
         <div>
             <strong>💪 Фитнес-клуб</strong><br>
-            <small>Доход: +$50/сек. Цена: $7 500</small>
+            <small>Доход: +$50/сек. Цена: $<span id="price-desc-fitness">7500</span></small>
         </div>
         <button id="buy-fitness" class="action-btn" onclick="buyAsset('fitness', 7500, 50)">Купить</button>
     </div>
     <div class="item-row">
         <div>
             <strong>🚗 Автомойка</strong><br>
-            <small>Доход: +$175/сек. Цена: $35 000</small>
+            <small>Доход: +$175/сек. Цена: $<span id="price-desc-carwash">35000</span></small>
         </div>
         <button id="buy-carwash" class="action-btn" onclick="buyAsset('carwash', 35000, 175)">Купить</button>
     </div>
     <div class="item-row">
         <div>
             <strong>🍿 Кинотеатр</strong><br>
-            <small>Доход: +$600/сек. Цена: $150 000</small>
+            <small>Доход: +$600/сек. Цена: $<span id="price-desc-cinema">150000</span></small>
         </div>
         <button id="buy-cinema" class="action-btn" onclick="buyAsset('cinema', 150000, 600)">Купить</button>
     </div>
     <div class="item-row">
         <div>
             <strong>🏨 Отель</strong><br>
-            <small>Доход: +$2 000/сек. Цена: $600 000</small>
+            <small>Доход: +$2 000/сек. Цена: $<span id="price-desc-hotel">600000</span></small>
         </div>
         <button id="buy-hotel" class="action-btn" onclick="buyAsset('hotel', 600000, 2000)">Купить</button>
     </div>
     <div class="item-row">
         <div>
             <strong>🏥 Частная клиника</strong><br>
-            <small>Доход: +$7 000/сек. Цена: $2 500 000</small>
+            <small>Доход: +$7 000/сек. Цена: $<span id="price-desc-clinic">2500000</span></small>
         </div>
         <button id="buy-clinic" class="action-btn" onclick="buyAsset('clinic', 2500000, 7000)">Купить</button>
     </div>
     <div class="item-row">
         <div>
             <strong>🏢 Торговый центр</strong><br>
-            <small>Доход: +$25 000/сек. Цена: $10 000 000</small>
+            <small>Доход: +$25 000/сек. Цена: $<span id="price-desc-mall">10000000</span></small>
         </div>
         <button id="buy-mall" class="action-btn" onclick="buyAsset('mall', 10000000, 25000)">Купить</button>
     </div>
@@ -260,6 +260,20 @@
         // Инициализация Telegram Web App
         const tg = window.Telegram.WebApp;
         tg.expand(); // Расширяем на весь экран
+
+        // Функция красивого форматирования чисел
+function formatNumber(num) {
+    if (num >= 1.0e+9) {
+        return (num / 1.0e+9).toFixed(1).replace(/\.0$/, '') + ' млрд';
+    }
+    if (num >= 1.0e+6) {
+        return (num / 1.0e+6).toFixed(1).replace(/\.0$/, '') + ' млн';
+    }
+    if (num >= 1.0e+3) {
+        return (num / 1.0e+3).toFixed(1).replace(/\.0$/, '') + ' тыс.';
+    }
+    return num.toString();
+}
 
         // Отображение имени пользователя из ТГ
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
@@ -349,7 +363,7 @@ function initGarageDOM() {
                 row.innerHTML = `
             <div>
                 <strong>${car.name}</strong><br>
-                <small>Доход: +$${car.income.toLocaleString()}/сек. Цена: $${car.price.toLocaleString()}</small>
+                       <small>Доход: +$${formatNumber(car.income)}/сек. Цена: $${formatNumber(car.price)}</small>
             </div>
             <button id="buy-${car.id}" class="action-btn" onclick="buyCarItem('${car.id}', ${car.price}, '${car.name}', ${car.income})">Купить</button>
         `;
@@ -376,9 +390,20 @@ function buyCarItem(id, price, name, incomePlus) {
         };
 
         function updateUI() {
-            document.getElementById('balance').innerText = '$' + gameState.balance;
-            document.getElementById('income').innerText = '$' + gameState.income + '/сек';
+            document.getElementById('balance').innerText = '$' + formatNumber(gameState.balance);
+document.getElementById('income').innerText = '$' + formatNumber(gameState.income) + '/сек';
             
+                    // Обновление отображения цен бизнеса
+        if(document.getElementById('price-desc-cafe')) document.getElementById('price-desc-cafe').innerText = formatNumber(50);
+        if(document.getElementById('price-desc-shop')) document.getElementById('price-desc-shop').innerText = formatNumber(250);
+        if(document.getElementById('price-desc-pizza')) document.getElementById('price-desc-pizza').innerText = formatNumber(1500);
+        if(document.getElementById('price-desc-fitness')) document.getElementById('price-desc-fitness').innerText = formatNumber(7500);
+        if(document.getElementById('price-desc-carwash')) document.getElementById('price-desc-carwash').innerText = formatNumber(35000);
+        if(document.getElementById('price-desc-cinema')) document.getElementById('price-desc-cinema').innerText = formatNumber(150000);
+        if(document.getElementById('price-desc-hotel')) document.getElementById('price-desc-hotel').innerText = formatNumber(600000);
+        if(document.getElementById('price-desc-clinic')) document.getElementById('price-desc-clinic').innerText = formatNumber(2500000);
+        if(document.getElementById('price-desc-mall')) document.getElementById('price-desc-mall').innerText = formatNumber(10000000);
+
            // Проверка доступности кнопок по деньгам
 document.getElementById('buy-cafe').disabled = gameState.balance < 50;
 document.getElementById('buy-shop').disabled = gameState.balance < 250;
