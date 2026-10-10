@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Симулятор Жизни</title>
     <!-- Подключение Telegram Web App API -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://telegram.org"></script>
     <style>
         :root {
             --tg-theme-bg-color: #182533;
@@ -14,7 +14,6 @@
             --tg-theme-button-text-color: #ffffff;
             --tg-theme-hint-color: #7d8b99;
         }
-        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--tg-theme-bg-color);
@@ -24,18 +23,43 @@
             user-select: none;
             -webkit-user-select: none;
         }
-
         .header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             background: rgba(255,255,255,0.05);
             padding: 12px;
             border-radius: 12px;
         }
-
         .username {
             font-weight: bold;
             color: var(--tg-theme-button-color);
+        }
+        
+        /* Блок уровня */
+        .level-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+        .level-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+        .xp-bar-bg {
+            background: rgba(255, 255, 255, 0.1);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .xp-bar-fill {
+            background: #4caf50;
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
         }
 
         .stats-grid {
@@ -44,26 +68,22 @@
             gap: 10px;
             margin-bottom: 20px;
         }
-
         .stat-card {
             background: rgba(255,255,255,0.08);
             padding: 12px;
             border-radius: 10px;
             text-align: center;
         }
-
         .stat-val {
             font-size: 18px;
             font-weight: bold;
             margin-top: 4px;
         }
-
         .nav-tabs {
             display: flex;
             gap: 5px;
             margin-bottom: 15px;
         }
-
         .tab-btn {
             flex: 1;
             background: rgba(255,255,255,0.1);
@@ -74,12 +94,10 @@
             font-weight: bold;
             cursor: pointer;
         }
-
         .tab-btn.active {
             background: var(--tg-theme-button-color);
             color: var(--tg-theme-button-text-color);
         }
-
         .panel {
             display: none;
             background: rgba(255,255,255,0.03);
@@ -87,11 +105,9 @@
             padding: 15px;
             min-height: 200px;
         }
-
         .panel.active {
             display: block;
         }
-
         .item-row {
             display: flex;
             justify-content: space-between;
@@ -99,11 +115,9 @@
             padding: 10px 0;
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-
         .item-row:last-child {
             border-bottom: none;
         }
-
         .action-btn {
             background: var(--tg-theme-button-color);
             color: var(--tg-theme-button-text-color);
@@ -113,13 +127,11 @@
             font-weight: bold;
             cursor: pointer;
         }
-
         .action-btn:disabled {
             background: #444;
             color: #888;
             cursor: not-allowed;
         }
-
         .logs {
             margin-top: 15px;
             font-size: 12px;
@@ -128,25 +140,21 @@
             overflow-y: auto;
             text-align: center;
         }
-
-        /* Настройки контейнера гаража для красивого скролла */
-.garage-container {
-    max-height: 60vh;
-    overflow-y: auto;
-    padding-right: 5px;
-}
-
-.car-tier-title {
-    background: rgba(255,255,255,0.1);
-    padding: 6px 10px;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: bold;
-    margin-top: 15px;
-    margin-bottom: 5px;
-    color: #ffd700;
-}
-
+        .garage-container {
+            max-height: 60vh;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        .car-tier-title {
+            background: rgba(255,255,255,0.1);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            color: #ffd700;
+        }
     </style>
 </head>
 <body>
@@ -155,12 +163,16 @@
         Привет, <span id="username" class="username">Игрок</span>! Добро пожаловать в Симулятор Жизни.
     </div>
 
-    <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; margin-bottom: 15px; font-size: 14px; font-weight: bold;">
-    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-        <span id="level-display">⭐ Уровень: 1</span>
-        <span id="xp-display">XP: 0 / 100</span>
+    <!-- Индикатор уровня и прогресс-бар -->
+    <div class="level-container">
+        <div class="level-info">
+            <span id="level-display">⭐ Уровень: 1</span>
+            <span id="xp-display">XP: 0 / 100</span>
+        </div>
+        <div class="xp-bar-bg">
+            <div id="xp-bar-fill" class="xp-bar-fill"></div>
+        </div>
     </div>
-</div>
 
     <div class="stats-grid">
         <div class="stat-card">
@@ -174,113 +186,108 @@
     </div>
 
     <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('work')">💼 Работа</button>
-        <button class="tab-btn" onclick="switchTab('business')">🏢 Бизнес</button>
-        <button class="tab-btn" onclick="switchTab('garage')">🚗 Гараж</button>
+        <button class="tab-btn active" onclick="switchTab('work', event)">💼 Работа</button>
+        <button class="tab-btn" onclick="switchTab('business', event)">🏢 Бизнес</button>
+        <button class="tab-btn" onclick="switchTab('garage', event)">🚗 Гараж</button>
     </div>
 
     <!-- Вкладка РАБОТА -->
     <div id="work-panel" class="panel active">
         <div style="text-align:center; padding: 20px 0;">
-            <button class="action-btn" style="padding: 15px 30px; font-size: 16px;" onclick="clickWork()">👋 Работать руками (+$1)</button>
+            <button class="action-btn" style="padding: 15px 30px; font-size: 16px;" onclick="clickWork()">👋 Работать руками (+$1 / +1 XP)</button>
         </div>
     </div>
 
-<!-- Вкладка БИЗНЕС -->
-<div id="business-panel" class="panel">
-    <div class="item-row">
-        <div>
-            <strong>☕ Кофейня</strong><br>
-            <small>Доход: +$1/сек. Цена: $50</small>
+    <!-- Вкладка БИЗНЕС -->
+    <div id="business-panel" class="panel">
+        <div class="item-row">
+            <div>
+                <strong>☕ Кофейня</strong><br>
+                <small>Доход: +$1/сек. Цена: $50</small>
+            </div>
+            <button id="buy-cafe" class="action-btn" onclick="buyAsset('cafe', 50, 1)">Купить</button>
         </div>
-        <button id="buy-cafe" class="action-btn" onclick="buyAsset('cafe', 50, 1)">Купить</button>
-    </div>
-    <div class="item-row">
-        <div>
-            <strong>🛒 Супермаркет</strong><br>
-            <small>Доход: +$5/сек. Цена: $250</small>
+        <div class="item-row">
+            <div>
+                <strong>🛒 Супермаркет</strong><br>
+                <small>Доход: +$5/сек. Цена: $250</small>
+            </div>
+            <button id="buy-shop" class="action-btn" onclick="buyAsset('shop', 250, 5)">Купить</button>
         </div>
-        <button id="buy-shop" class="action-btn" onclick="buyAsset('shop', 250, 5)">Купить</button>
-    </div>
-    <div class="item-row">
-        <div>
-            <strong>🍕 Пиццерия</strong><br>
-            <small>Доход: +$15/сек. Цена: $1 500</small>
+        <div class="item-row">
+            <div>
+                <strong>🍕 Пиццерия</strong><br>
+                <small>Доход: +$15/сек. Цена: $1 500</small>
+            </div>
+            <button id="buy-pizza" class="action-btn" onclick="buyAsset('pizza', 1500, 15)">Купить</button>
         </div>
-        <button id="buy-pizza" class="action-btn" onclick="buyAsset('pizza', 1500, 15)">Купить</button>
-    </div>
-    <div class="item-row">
-        <div>
-            <strong>💪 Фитнес-клуб</strong><br>
-            <small>Доход: +$50/сек. Цена: $7 500</small>
+        <div class="item-row">
+            <div>
+                <strong>💪 Фитнес-клуб</strong><br>
+                <small>Доход: +$50/сек. Цена: $7 500</small>
+            </div>
+            <button id="buy-fitness" class="action-btn" onclick="buyAsset('fitness', 7500, 50)">Купить</button>
         </div>
-        <button id="buy-fitness" class="action-btn" onclick="buyAsset('fitness', 7500, 50)">Купить</button>
-    </div>
-    <div class="item-row">
-        <div>
-            <strong>🚗 Автомойка</strong><br>
-            <small>Доход: +$175/сек. Цена: $35 000</small>
+        <div class="item-row">
+            <div>
+                <strong>🚗 Автомойка</strong><br>
+                <small>Доход: +$175/сек. Цена: $35 000</small>
+            </div>
+            <button id="buy-carwash" class="action-btn" onclick="buyAsset('carwash', 35000, 175)">Купить</button>
         </div>
-        <button id="buy-carwash" class="action-btn" onclick="buyAsset('carwash', 35000, 175)">Купить</button>
-    </div>
-    <div class="item-row">
-        <div>
-            <strong>🍿 Кинотеатр</strong><br>
-            <small>Доход: +$600/сек. Цена: $150 000</small>
+        <div class="item-row">
+            <div>
+                <strong>🍿 Кинотеатр</strong><br>
+                <small>Доход: +$600/сек. Цена: $150 000</small>
+            </div>
+            <button id="buy-cinema" class="action-btn" onclick="buyAsset('cinema', 150000, 600)">Купить</button>
         </div>
-        <button id="buy-cinema" class="action-btn" onclick="buyAsset('cinema', 150000, 600)">Купить</button>
-    </div>
-    <div class="item-row">
-        <div>
-            <strong>🏨 Отель</strong><br>
-            <small>Доход: +$2 000/сек. Цена: $600 000</small>
+        <div class="item-row">
+            <div>
+                <strong>🏨 Отель</strong><br>
+                <small>Доход: +$2 000/сек. Цена: $600 000</small>
+            </div>
+            <button id="buy-hotel" class="action-btn" onclick="buyAsset('hotel', 600000, 2000)">Купить</button>
         </div>
-        <button id="buy-hotel" class="action-btn" onclick="buyAsset('hotel', 600000, 2000)">Купить</button>
-    </div>
-    <div class="item-row">
-        <div>
-            <strong>🏥 Частная клиника</strong><br>
-            <small>Доход: +$7 000/сек. Цена: $2 500 000</small>
+        <div class="item-row">
+            <div>
+                <strong>🏥 Частная клиника</strong><br>
+                <small>Доход: +$7 000/сек. Цена: $2 500 000</small>
+            </div>
+            <button id="buy-clinic" class="action-btn" onclick="buyAsset('clinic', 2500000, 7000)">Купить</button>
         </div>
-        <button id="buy-clinic" class="action-btn" onclick="buyAsset('clinic', 2500000, 7000)">Купить</button>
-    </div>
-    <div class="item-row">
-        <div>
-            <strong>🏢 Торговый центр</strong><br>
-            <small>Доход: +$25 000/сек. Цена: $10 000 000</small>
+        <div class="item-row">
+            <div>
+                <strong>🏢 Торговый центр</strong><br>
+                <small>Доход: +$25 000/сек. Цена: $10 000 000</small>
+            </div>
+            <button id="buy-mall" class="action-btn" onclick="buyAsset('mall', 10000000, 25000)">Купить</button>
         </div>
-        <button id="buy-mall" class="action-btn" onclick="buyAsset('mall', 10000000, 25000)">Купить</button>
     </div>
-</div>
 
-    
- <!-- Вкладка ГАРАЖ -->
-<div id="garage-panel" class="panel">
-    <div class="garage-container" id="garage-list">
-        <!-- Машины генерируются автоматически через JS -->
+    <!-- Вкладка ГАРАЖ -->
+    <div id="garage-panel" class="panel">
+        <div class="garage-container" id="garage-list">
+            <!-- Машины генерируются автоматически через JS -->
+        </div>
     </div>
-</div>
-    
+
     <div id="logs" class="logs">Игра началась! Развивайся.</div>
 
     <script>
-        // Инициализация Telegram Web App
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Расширяем на весь экран
+        tg.expand();
 
-        // Отображение имени пользователя из ТГ
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
             document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name;
         }
 
-   // ПОЛНАЯ БАЗА ДАННЫХ НА 50 МАШИН (5 классов по 10 штук)
-const CARS_DATABASE = [
-    // УРОВЕНЬ 1: Эконом-класс
-    { id: "car_1", name: "ВАЗ 2101 «Копейка»", price: 30, income: 1, tier: "Эконом-класс" },
-    { id: "car_2", name: "Lada Granta", price: 60, income: 2, tier: "Эконом-класс" },
-    { id: "car_3", name: "Renault Logan", price: 120, income: 4, tier: "Эконом-класс" },
-    { id: "car_4", name: "Hyundai Solaris", price: 200, income: 7, tier: "Эконом-класс" },
-    { id: "car_5", name: "Kia Rio", price: 350, income: 12, tier: "Эконом-класс" },
+        const CARS_DATABASE = [
+            { id: "car_1", name: "ВАЗ 2101 «Копейка»", price: 30, income: 1, tier: "Эконом-класс" },
+            { id: "car_2", name: "Lada Granta", price: 60, income: 2, tier: "Эконом-класс" },
+            { id: "car_3", name: "Renault Logan", price: 120, income: 4, tier: "Эконом-класс" },
+            { id: "car_4", name: "Hyundai Solaris", price: 200, income: 7, tier: "Эконом-класс" },
+            { id: "car_5", name: "Kia Rio", price: 350, income: 12, tier: "Эконом-класс" },
     { id: "car_6", name: "Volkswagen Polo", price: 500, income: 18, tier: "Эконом-класс" },
     { id: "car_7", name: "Skoda Rapid", price: 750, income: 25, tier: "Эконом-класс" },
     { id: "car_8", name: "Ford Focus", price: 1100, income: 38, tier: "Эконом-класс" },
