@@ -574,58 +574,6 @@ function buyCarItem(id, price, name, incomePlus) {
     carsOwned: []
 };
 
-/* --- НОВЫЕ ФУНКЦИИ ДЛЯ МЕНЮ И ТЕХ.РАБОТ --- */
-
-function openSidebar() {
-    document.getElementById('sidebar').classList.add('open');
-    document.getElementById('overlay').classList.add('active');
-    if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-}
-
-function closeSidebar() {
-    document.getElementById('sidebar').classList.remove('open');
-    if (!document.getElementById('stats-modal').classList.contains('active')) {
-        document.getElementById('overlay').classList.remove('active');
-    }
-}
-
-function showTechWorksNotice(moduleName) {
-    closeSidebar();
-    if (tg.showAlert) {
-        tg.showAlert(`Раздел "${moduleName}" временно закрыт на технические работы. Загляните позже!`);
-    } else {
-        alert(`Раздел "${moduleName}" временно закрыт на технические работы. Загляните позже!`);
-    }
-}
-
-function openStatsModal() {
-    closeSidebar();
-    
-    let totalBusinesses = 0;
-    for (let key in gameState.businesses) {
-        totalBusinesses += gameState.businesses[key].count;
-    }
-
-    const modalBody = document.getElementById('stats-modal-body');
-    modalBody.innerHTML = `
-        <div class="stat-line"><span>👤 Владелец:</span> <strong>${currentUsername || 'Игрок'}</strong></div>
-        <div class="stat-line"><span>💵 Текущий баланс:</span> <strong>$${formatMoney(gameState.balance)}</strong></div>
-        <div class="stat-line"><span>⏱ Пассивный доход:</span> <strong>$${formatMoney(gameState.income)}/сек</strong></div>
-        <div class="stat-line"><span>👋 Кликнуто руками:</span> <strong>${gameState.totalClicks} раз</strong></div>
-        <div class="stat-line"><span>🏢 Всего бизнесов:</span> <strong>${totalBusinesses} шт.</strong></div>
-        <div class="stat-line"><span>🚗 Машин в гараже:</span> <strong>${gameState.carsOwned.length} шт.</strong></div>
-    `;
-
-    document.getElementById('stats-modal').classList.add('active');
-    document.getElementById('overlay').classList.add('active');
-    if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-}
-
-function closeModal() {
-    document.getElementById('stats-modal').classList.remove('active');
-    document.getElementById('overlay').classList.remove('active');
-}
-
         function updateUI() {
             document.getElementById('balance').innerText = '$' + formatNumber(gameState.balance);
 document.getElementById('income').innerText = '$' + formatNumber(gameState.income) + '/сек';
@@ -715,6 +663,58 @@ CARS_DATABASE.forEach(car => {
                 updateUI();
             }
         }, 1000);
+
+        /* --- НОВЫЕ ФУНКЦИИ ДЛЯ МЕНЮ И ТЕХ.РАБОТ --- */
+
+function openSidebar() {
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('overlay').classList.add('active');
+    if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+}
+
+function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    if (!document.getElementById('stats-modal').classList.contains('active')) {
+        document.getElementById('overlay').classList.remove('active');
+    }
+}
+
+function showTechWorksNotice(moduleName) {
+    closeSidebar();
+    if (tg.showAlert) {
+        tg.showAlert(`Раздел "${moduleName}" временно закрыт на технические работы. Загляните позже!`);
+    } else {
+        alert(`Раздел "${moduleName}" временно закрыт на технические работы. Загляните позже!`);
+    }
+}
+
+function openStatsModal() {
+    closeSidebar();
+    
+    let totalBusinesses = 0;
+    for (let key in gameState.businesses) {
+        totalBusinesses += gameState.businesses[key].count;
+    }
+
+    const modalBody = document.getElementById('stats-modal-body');
+    modalBody.innerHTML = `
+        <div class="stat-line"><span>👤 Владелец:</span> <strong>${currentUsername || 'Игрок'}</strong></div>
+        <div class="stat-line"><span>💵 Текущий баланс:</span> <strong>$${formatMoney(gameState.balance)}</strong></div>
+        <div class="stat-line"><span>⏱ Пассивный доход:</span> <strong>$${formatMoney(gameState.income)}/сек</strong></div>
+        <div class="stat-line"><span>👋 Кликнуто руками:</span> <strong>${gameState.totalClicks} раз</strong></div>
+        <div class="stat-line"><span>🏢 Всего бизнесов:</span> <strong>${totalBusinesses} шт.</strong></div>
+        <div class="stat-line"><span>🚗 Машин в гараже:</span> <strong>${gameState.carsOwned.length} шт.</strong></div>
+    `;
+
+    document.getElementById('stats-modal').classList.add('active');
+    document.getElementById('overlay').classList.add('active');
+    if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+}
+
+function closeModal() {
+    document.getElementById('stats-modal').classList.remove('active');
+    document.getElementById('overlay').classList.remove('active');
+}
 
         // ВОТ СЮДА ВСТАВЛЯЙТЕ ЭТИ СТРОЧКИ (в самый низ файла):
         initGarageDOM();
