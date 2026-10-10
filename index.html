@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -128,292 +128,202 @@
             overflow-y: auto;
             text-align: center;
         }
-
-     /* Кнопка меню */
-.menu-burger-btn {
-    position: absolute;
-    top: 16px;
-    left: 16px;
-    font-size: 24px;
-    cursor: pointer;
-    z-index: 10;
-    color: var(--tg-theme-text-color);
-    background: rgba(255,255,255,0.05);
-    padding: 4px 10px;
-    border-radius: 8px;
-    line-height: 1;
-}
-
-/* Смещаем заголовок чуть ниже или правее, чтобы кнопка не перекрывала текст */
-.header {
-    padding-top: 45px; /* Корректировка под кнопку */
-}
-
-/* Боковое меню */
-.side-menu {
-    position: fixed;
-    top: 0;
-    left: -260px; /* Изначально спрятано */
-    width: 240px;
-    height: 100%;
-    background: #111a24;
-    box-shadow: 5px 0 15px rgba(0,0,0,0.5);
-    z-index: 100;
-    transition: left 0.3s ease;
-    padding: 20px;
-    box-sizing: border-box;
-}
-.side-menu.open {
-    left: 0;
-}
-.menu-close-btn {
-    text-align: right;
-    font-size: 20px;
-    cursor: pointer;
-    color: var(--tg-theme-hint-color);
-}
-.menu-title {
-    font-size: 20px;
-    font-weight: bold;
-    margin: 20px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    padding-bottom: 10px;
-}
-.menu-items {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-.menu-item {
-    padding: 12px;
-    background: rgba(255,255,255,0.05);
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background 0.2s;
-}
-.menu-item:hover {
-    background: var(--tg-theme-button-color);
-}
-
-/* Модальные окна */
-.modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.7);
-    z-index: 110;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    box-sizing: border-box;
-}
-.modal-content {
-    background: #1c2a38;
-    border-radius: 16px;
-    padding: 20px;
-    width: 100%;
-    max-width: 320px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    border: 1px solid rgba(255,255,255,0.1);
-}
-.modal-stat-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    font-size: 14px;
-}
-.modal-stat-row:last-of-type {
-    border-bottom: none;
-}
-
-/* >>> ВСЯ СЛЕДУЮЩАЯ ЧАСТЬ ВСТАВЛЯЕТСЯ СЮДА: <<< */
-        /* Стили для уровня и прогресс-бара */
-        .level-container {
-            margin-top: 8px;
-            font-size: 14px;
-        }
-     
-        .status-badge {
-            display: inline-block;
-            background: var(--tg-theme-button-color);
-            color: #fff;
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-left: 5px;
-            vertical-align: middle;
-        }
-     
-        .progress-bar-bg {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 6px;
-            height: 8px;
-            width: 100%;
-            margin-top: 6px;
-            overflow: hidden;
-        }
-     
-        .progress-bar-fill {
-            background: #4caf50;
-            height: 100%;
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-     
-/* Красивая сетка для предметов инвентаря */
-.inventory-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* В два столбца */
-    gap: 8px;
-    margin-top: 10px;
-}
-
-/* Стиль карточки предмета */
-.inventory-card {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    padding: 12px 8px;
-    text-align: center;
-    font-size: 13px;
-    font-weight: 500;
-    backdrop-filter: blur(5px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    transition: transform 0.2s;
-}
-
     </style>
 </head>
 <body>
- 
-<!-- Иконка бургер-меню -->
-<div class="menu-burger-btn" onclick="toggleMenu(true)">☰</div>
 
-<!-- Само боковое меню (шторка) -->
-<div id="side-menu" class="side-menu">
-    <div class="menu-close-btn" onclick="toggleMenu(false)">✕</div>
-    <div class="menu-title">Меню игры</div>
-    
-    <div class="menu-items">
-        <div class="menu-item" onclick="openMenuTab('menu-stats')">📊 Статистика</div>
-        <div class="menu-item" onclick="openMenuTab('menu-inventory')">🎒 Инвентарь</div>
-        <div class="menu-item" onclick="openMenuTab('menu-bank')">🏦 Банк</div>
+    <div class="header">
+        Привет, <span id="username" class="username">Игрок</span>! Добро пожаловать в Симулятор Жизни.
     </div>
-</div>
 
-<!-- Модальные окна для пунктов меню -->
-<div id="menu-modal-overlay" class="modal-overlay" onclick="closeMenuModal()">
-    <div class="modal-content" onclick="event.stopPropagation()">
-        <!-- Контент Статистики -->
-        <div id="menu-stats" class="menu-panel">
-            <h3>📊 Личная статистика</h3>
-                                     <div class="modal-stat-row">
-                    <span>Текущий уровень:</span> 
-                    <strong id="m-stat-level">1</strong>
-                </div>
-                <div class="modal-stat-row">
-                    <span>Всего заработано:</span> 
-                    <strong id="m-stat-total-money">1 000 ₽</strong>
-                </div>
-                <button class="action-btn" style="width:100%; margin-top:15px;" onclick="closeMenuModal()">Закрыть</button>
-            </div>
-
-            <!-- Контент Инвентаря -->
-            <div id="menu-inventory" class="menu-panel" style="display: none;">
-                <h3>🎒 Ваш инвентарь</h3>
-                <div class="inventory-grid">
-                    <div class="inventory-card">🍏 Яблоко (2 шт)</div>
-                    <div class="inventory-card">🥤 Энергетик (1 шт)</div>
-                </div>
-                <button class="action-btn" style="width:100%; margin-top:15px;" onclick="closeMenuModal()">Закрыть</button>
-            </div>
-
-            <!-- Контент Банка -->
-            <div id="menu-bank" class="menu-panel" style="display: none;">
-                <h3>🏦 Банковский счет</h3>
-                <div class="modal-stat-row">
-                    <span>Вклад в банке:</span> 
-                    <strong id="m-bank-deposit">0 ₽</strong>
-                </div>
-                <button class="action-btn" style="width:100%; margin-top:15px;" onclick="closeMenuModal()">Закрыть</button>
-            </div>
-
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div>💵 Баланс</div>
+            <div id="balance" class="stat-val">$100</div>
+        </div>
+        <div class="stat-card">
+            <div>⏱ Пассивный доход</div>
+            <div id="income" class="stat-val">$0/сек</div>
         </div>
     </div>
 
-    <!-- Основной скрипт управления игрой -->
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('work')">💼 Работа</button>
+        <button class="tab-btn" onclick="switchTab('business')">🏢 Бизнес</button>
+        <button class="tab-btn" onclick="switchTab('garage')">🚗 Гараж</button>
+    </div>
+
+    <!-- Вкладка РАБОТА -->
+    <div id="work-panel" class="panel active">
+        <div style="text-align:center; padding: 20px 0;">
+            <button class="action-btn" style="padding: 15px 30px; font-size: 16px;" onclick="clickWork()">👋 Работать руками (+$1)</button>
+        </div>
+    </div>
+
+<!-- Вкладка БИЗНЕС -->
+<div id="business-panel" class="panel">
+    <div class="item-row">
+        <div>
+            <strong>☕ Кофейня</strong><br>
+            <small>Доход: +$1/сек. Цена: $50</small>
+        </div>
+        <button id="buy-cafe" class="action-btn" onclick="buyAsset('cafe', 50, 1)">Купить</button>
+    </div>
+    <div class="item-row">
+        <div>
+            <strong>🛒 Супермаркет</strong><br>
+            <small>Доход: +$5/сек. Цена: $250</small>
+        </div>
+        <button id="buy-shop" class="action-btn" onclick="buyAsset('shop', 250, 5)">Купить</button>
+    </div>
+    <div class="item-row">
+        <div>
+            <strong>🍕 Пиццерия</strong><br>
+            <small>Доход: +$15/сек. Цена: $1 500</small>
+        </div>
+        <button id="buy-pizza" class="action-btn" onclick="buyAsset('pizza', 1500, 15)">Купить</button>
+    </div>
+    <div class="item-row">
+        <div>
+            <strong>💪 Фитнес-клуб</strong><br>
+            <small>Доход: +$50/сек. Цена: $7 500</small>
+        </div>
+        <button id="buy-fitness" class="action-btn" onclick="buyAsset('fitness', 7500, 50)">Купить</button>
+    </div>
+    <div class="item-row">
+        <div>
+            <strong>🚗 Автомойка</strong><br>
+            <small>Доход: +$175/сек. Цена: $35 000</small>
+        </div>
+        <button id="buy-carwash" class="action-btn" onclick="buyAsset('carwash', 35000, 175)">Купить</button>
+    </div>
+    <div class="item-row">
+        <div>
+            <strong>🍿 Кинотеатр</strong><br>
+            <small>Доход: +$600/сек. Цена: $150 000</small>
+        </div>
+        <button id="buy-cinema" class="action-btn" onclick="buyAsset('cinema', 150000, 600)">Купить</button>
+    </div>
+    <div class="item-row">
+        <div>
+            <strong>🏨 Отель</strong><br>
+            <small>Доход: +$2 000/сек. Цена: $600 000</small>
+        </div>
+        <button id="buy-hotel" class="action-btn" onclick="buyAsset('hotel', 600000, 2000)">Купить</button>
+    </div>
+    <div class="item-row">
+        <div>
+            <strong>🏥 Частная клиника</strong><br>
+            <small>Доход: +$7 000/сек. Цена: $2 500 000</small>
+        </div>
+        <button id="buy-clinic" class="action-btn" onclick="buyAsset('clinic', 2500000, 7000)">Купить</button>
+    </div>
+    <div class="item-row">
+        <div>
+            <strong>🏢 Торговый центр</strong><br>
+            <small>Доход: +$25 000/сек. Цена: $10 000 000</small>
+        </div>
+        <button id="buy-mall" class="action-btn" onclick="buyAsset('mall', 10000000, 25000)">Купить</button>
+    </div>
+</div>
+
+    <div id="logs" class="logs">Игра началась! Развивайся.</div>
+
     <script>
-        // Инициализация Telegram Web App API
-        const tg = window.Telegram?.WebApp;
-        if (tg) {
-            tg.expand(); // Разворачиваем приложение на весь экран
-            if (tg.initDataUnsafe?.user?.first_name) {
-                // Подставляем имя пользователя из Telegram
-                document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name;
-            }
+        // Инициализация Telegram Web App
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Расширяем на весь экран
+
+        // Отображение имени пользователя из ТГ
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name;
         }
 
-        // Функция открытия/закрытия боковой шторки меню
-        function toggleMenu(open) {
-            const sideMenu = document.getElementById('side-menu');
-            if (open) {
-                sideMenu.classList.add('open');
+        // Состояние игры (сохраняется в localStorage)
+        let gameState = JSON.parse(localStorage.getItem('tg_life_sim_state')) || {
+            balance: 100,
+            income: 0,
+            inventory: []
+        };
+
+        function updateUI() {
+            document.getElementById('balance').innerText = '$' + gameState.balance;
+            document.getElementById('income').innerText = '$' + gameState.income + '/сек';
+            
+           // Проверка доступности кнопок по деньгам
+document.getElementById('buy-cafe').disabled = gameState.balance < 50;
+document.getElementById('buy-shop').disabled = gameState.balance < 250;
+document.getElementById('buy-pizza').disabled = gameState.balance < 1500;
+document.getElementById('buy-fitness').disabled = gameState.balance < 7500;
+document.getElementById('buy-carwash').disabled = gameState.balance < 35000;
+document.getElementById('buy-cinema').disabled = gameState.balance < 150000;
+document.getElementById('buy-hotel').disabled = gameState.balance < 600000;
+document.getElementById('buy-clinic').disabled = gameState.balance < 2500000;
+document.getElementById('buy-mall').disabled = gameState.balance < 10000000;
+
+            
+            if (gameState.inventory.includes('bike')) {
+                document.getElementById('buy-bike').innerText = 'В гараже';
+                document.getElementById('buy-bike').disabled = true;
             } else {
-                sideMenu.classList.remove('open');
+                document.getElementById('buy-bike').disabled = gameState.balance < 30;
+            }
+
+            if (gameState.inventory.includes('car')) {
+                document.getElementById('buy-car').innerText = 'В гараже';
+                document.getElementById('buy-car').disabled = true;
+            } else {
+                document.getElementById('buy-car').disabled = gameState.balance < 150;
+            }
+
+            localStorage.setItem('tg_life_sim_state', JSON.stringify(gameState));
+        }
+
+        function log(message) {
+            document.getElementById('logs').innerText = message;
+        }
+
+        function clickWork() {
+            gameState.balance += 1;
+            updateUI();
+        }
+
+        function buyAsset(id, price, incomePlus) {
+            if (gameState.balance >= price) {
+                gameState.balance -= price;
+                gameState.income += incomePlus;
+                log('Вы открыли бизнес!');
+                updateUI();
             }
         }
 
-        // Функция открытия окон (Статистика, Инвентарь, Банк) из бокового меню
-        function openMenuTab(tabId) {
-            toggleMenu(false); // Скрываем шторку меню
+        function buyItem(id, price, name) {
+            if (gameState.balance >= price && !gameState.inventory.includes(id)) {
+                gameState.balance -= price;
+                gameState.inventory.push(id);
+                log('Куплено имущество: ' + name);
+                updateUI();
+            }
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             
-            // Скрываем абсолютно все панели в модальном окне
-            document.querySelectorAll('.menu-panel').forEach(panel => {
-                panel.style.display = 'none';
-            });
-            
-            // Показываем только ту панель, на которую нажали
-            document.getElementById(tabId).style.display = 'block';
-            // Открываем темный фон-оверлей
-            document.getElementById('menu-modal-overlay').style.display = 'flex';
+            document.getElementById(tab + '-panel').classList.add('active');
+            event.currentTarget.classList.add('active');
         }
 
-        // Функция закрытия модального окна
-        function closeMenuModal() {
-            document.getElementById('menu-modal-overlay').style.display = 'none';
-        }
+        // Каждую секунду начисляем доход
+        setInterval(() => {
+            if (gameState.income > 0) {
+                gameState.balance += gameState.income;
+                updateUI();
+            }
+        }, 1000);
 
-        // Функция переключения главных вкладок (Работа / Магазин)
-        function switchMainTab(panelId) {
-            // Скрываем обе панели
-            document.querySelectorAll('.panel').forEach(panel => panel.classList.remove('active'));
-            // Снимаем подсветку с кнопок вкладок
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            
-            // Активируем нужную панель и подсвечиваем нажатую кнопку
-            document.getElementById(panelId).classList.add('active');
-            event.target.classList.add('active');
-        }
-
-        // Вспомогательные функции для вывода логов на экран
-        function logMessage(text) {
-            document.getElementById('logs-output').innerText = text;
-        }
-
-        function doWork(reward, energyCost) {
-            logMessage(`Вы отлично поработали! Заработано +${reward} ₽`);
-        }
-
-        function buyItem(price) {
-            logMessage(`Вы купили предмет за ${price} ₽`);
-        }
+        // Первый запуск интерфейса
+        updateUI();
     </script>
 </body>
 </html>
