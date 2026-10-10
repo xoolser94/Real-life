@@ -497,7 +497,7 @@ CARS_DATABASE.forEach(car => {
     updateUI();
 }
 
-       function buyAsset(id, price, incomePlus) {
+     function buyAsset(id, price, incomePlus) {
     // 1. Проверяем, есть ли уже у игрока этот бизнес в базе данных (для старых сохранений)
     if (!gameState.businesses) {
         gameState.businesses = { cafe: 0, shop: 0, pizza: 0, fitness: 0, carwash: 0, cinema: 0, hotel: 0, clinic: 0, mall: 0 };
