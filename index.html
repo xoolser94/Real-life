@@ -431,19 +431,9 @@ function addXp(amount) {
             document.getElementById('income').innerText = '$' + gameState.income + '/сек';
             document.getElementById('level-display').innerText = `⭐ Уровень: ${gameState.level}`;
 document.getElementById('xp-display').innerText = `XP: ${Math.floor(gameState.xp)} / ${getRequiredXp(gameState.level)}`;
-
-           // Проверка доступности кнопок по деньгам
-document.getElementById('buy-cafe').disabled = gameState.balance < 50;
-document.getElementById('buy-shop').disabled = gameState.balance < 250;
-document.getElementById('buy-pizza').disabled = gameState.balance < 1500;
-document.getElementById('buy-fitness').disabled = gameState.balance < 7500;
-document.getElementById('buy-carwash').disabled = gameState.balance < 35000;
-document.getElementById('buy-cinema').disabled = gameState.balance < 150000;
-document.getElementById('buy-hotel').disabled = gameState.balance < 600000;
-document.getElementById('buy-clinic').disabled = gameState.balance < 2500000;
-document.getElementById('buy-mall').disabled = gameState.balance < 10000000;
-
-    // Проверка для старых сохранений, чтобы игра не ломалась
+}
+        
+            // Проверка для старых сохранений, чтобы игра не ломалась
     if (!gameState.businesses) {
         gameState.businesses = { cafe: 0, shop: 0, pizza: 0, fitness: 0, carwash: 0, cinema: 0, hotel: 0, clinic: 0, mall: 0 };
     }
@@ -467,6 +457,17 @@ document.getElementById('buy-mall').disabled = gameState.balance < 10000000;
             }
         }
     });
+
+           // Проверка доступности кнопок по деньгам
+document.getElementById('buy-cafe').disabled = gameState.balance < 50;
+document.getElementById('buy-shop').disabled = gameState.balance < 250;
+document.getElementById('buy-pizza').disabled = gameState.balance < 1500;
+document.getElementById('buy-fitness').disabled = gameState.balance < 7500;
+document.getElementById('buy-carwash').disabled = gameState.balance < 35000;
+document.getElementById('buy-cinema').disabled = gameState.balance < 150000;
+document.getElementById('buy-hotel').disabled = gameState.balance < 600000;
+document.getElementById('buy-clinic').disabled = gameState.balance < 2500000;
+document.getElementById('buy-mall').disabled = gameState.balance < 10000000;
 
             
     // Доступность кнопок в гараже
