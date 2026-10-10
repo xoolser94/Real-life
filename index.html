@@ -375,35 +375,47 @@ function buyCarItem(id, price, name, incomePlus) {
     }
  }
    
-     // Состояние игры с сохранением уровня и опыта
+  // Максимальное количество бизнесов одного типа, которое можно купить
+const BUSINESS_MAX_COUNT = 5; 
+
+// Состояние игры (включает счетчики для каждого бизнеса)
 let gameState = JSON.parse(localStorage.getItem('tg_life_sim_state')) || {
     balance: 100,
     income: 0,
     inventory: [],
     level: 1,
-    xp: 0
+    xp: 0,
+    // Добавляем хранение количества для каждого бизнеса:
+    businesses: {
+        cafe: 0,
+        shop: 0,
+        pizza: 0,
+        fitness: 0,
+        carwash: 0,
+        cinema: 0,
+        hotel: 0,
+        clinic: 0,
+        mall: 0
+    }
 };
 
-// Функция расчета опыта: с каждым уровнем требование растет (1 ур = 100 XP, 50 ур = ~35 000 XP)
+// Функция расчета опыта (остается прежней)
 function getRequiredXp(level) {
     if (level >= 100) return 0;
     return Math.floor(Math.pow(level, 1.5) * 100);
 }
 
-// Функция добавления опыта и автоматического повышения уровня
+// Функция добавления опыта (остается прежней)
 function addXp(amount) {
     if (gameState.level >= 100) return;
-
     gameState.xp += amount;
     let requiredXp = getRequiredXp(gameState.level);
-
     while (gameState.xp >= requiredXp && gameState.level < 100) {
         gameState.xp -= requiredXp;
         gameState.level++;
         log(`🎉 Уровень повышен! Ваш текущий уровень: ${gameState.level}`);
         requiredXp = getRequiredXp(gameState.level);
     }
-
     if (gameState.level >= 100) gameState.xp = 0;
 }
 
@@ -423,6 +435,31 @@ document.getElementById('buy-cinema').disabled = gameState.balance < 150000;
 document.getElementById('buy-hotel').disabled = gameState.balance < 600000;
 document.getElementById('buy-clinic').disabled = gameState.balance < 2500000;
 document.getElementById('buy-mall').disabled = gameState.balance < 10000000;
+
+    // Проверка для старых сохранений, чтобы игра не ломалась
+    if (!gameState.businesses) {
+        gameState.businesses = { cafe: 0, shop: 0, pizza: 0, fitness: 0, carwash: 0, cinema: 0, hotel: 0, clinic: 0, mall: 0 };
+    }
+
+    // Список всех ID бизнесов для автоматического обновления кнопок
+    const businessIds = ['cafe', 'shop', 'pizza', 'fitness', 'carwash', 'cinema', 'hotel', 'clinic', 'mall'];
+    const businessPrices =;
+
+    businessIds.forEach((id, index) => {
+        const btn = document.getElementById(`buy-${id}`);
+        const currentCount = gameState.businesses[id] || 0;
+        const price = businessPrices[index];
+
+        if (btn) {
+            if (currentCount >= BUSINESS_MAX_COUNT) {
+                btn.innerText = `Макс (${currentCount}/${BUSINESS_MAX_COUNT})`;
+                btn.disabled = true; // Выключаем кнопку, если лимит
+            } else {
+                btn.innerText = `Купить (${currentCount}/${BUSINESS_MAX_COUNT})`;
+                btn.disabled = gameState.balance < price; // Выключаем, если мало денег
+            }
+        }
+    });
 
             
     // Доступность кнопок в гараже
@@ -452,14 +489,28 @@ CARS_DATABASE.forEach(car => {
     updateUI();
 }
 
-        function buyAsset(id, price, incomePlus) {
-            if (gameState.balance >= price) {
-                gameState.balance -= price;
-                gameState.income += incomePlus;
-                log('Вы открыли бизнес!');
-                updateUI();
-            }
-        }
+       function buyAsset(id, price, incomePlus) {
+    // 1. Проверяем, есть ли уже у игрока этот бизнес в базе данных (для старых сохранений)
+    if (!gameState.businesses) {
+        gameState.businesses = { cafe: 0, shop: 0, pizza: 0, fitness: 0, carwash: 0, cinema: 0, hotel: 0, clinic: 0, mall: 0 };
+    }
+    
+    // 2. Проверяем лимит количества
+    if (gameState.businesses[id] >= BUSINESS_MAX_COUNT) {
+        log('Достигнут максимальный лимит построек этого типа!');
+        return;
+    }
+
+    // 3. Проверяем баланс и совершаем покупку
+    if (gameState.balance >= price) {
+        gameState.balance -= price;
+        gameState.income += incomePlus;
+        gameState.businesses[id] += 1; // Увеличиваем счетчик купленного бизнеса
+        
+        log(`Куплено! Всего у вас: ${gameState.businesses[id]} шт.`);
+        updateUI();
+    }
+}
 
         function buyItem(id, price, name) {
             if (gameState.balance >= price && !gameState.inventory.includes(id)) {
