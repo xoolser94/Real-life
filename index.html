@@ -128,6 +128,25 @@
             overflow-y: auto;
             text-align: center;
         }
+
+        /* Настройки контейнера гаража для красивого скролла */
+.garage-container {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.car-tier-title {
+    background: rgba(255,255,255,0.1);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    color: #ffd700;
+}
+
     </style>
 </head>
 <body>
@@ -227,6 +246,14 @@
     </div>
 </div>
 
+    
+ <!-- Вкладка ГАРАЖ -->
+<div id="garage-panel" class="panel">
+    <div class="garage-container" id="garage-list">
+        <!-- Машины генерируются автоматически через JS -->
+    </div>
+</div>
+    
     <div id="logs" class="logs">Игра началась! Развивайся.</div>
 
     <script>
@@ -239,6 +266,108 @@
             document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name;
         }
 
+   // ПОЛНАЯ БАЗА ДАННЫХ НА 50 МАШИН (5 классов по 10 штук)
+const CARS_DATABASE = [
+    // УРОВЕНЬ 1: Эконом-класс
+    { id: "car_1", name: "ВАЗ 2101 «Копейка»", price: 30, income: 1, tier: "Эконом-класс" },
+    { id: "car_2", name: "Lada Granta", price: 60, income: 2, tier: "Эконом-класс" },
+    { id: "car_3", name: "Renault Logan", price: 120, income: 4, tier: "Эконом-класс" },
+    { id: "car_4", name: "Hyundai Solaris", price: 200, income: 7, tier: "Эконом-класс" },
+    { id: "car_5", name: "Kia Rio", price: 350, income: 12, tier: "Эконом-класс" },
+    { id: "car_6", name: "Volkswagen Polo", price: 500, income: 18, tier: "Эконом-класс" },
+    { id: "car_7", name: "Skoda Rapid", price: 750, income: 25, tier: "Эконом-класс" },
+    { id: "car_8", name: "Ford Focus", price: 1100, income: 38, tier: "Эконом-класс" },
+    { id: "car_9", name: "Chevrolet Cruze", price: 1600, income: 55, tier: "Эконом-класс" },
+    { id: "car_10", name: "Mazda 3", price: 2300, income: 80, tier: "Эконом-класс" },
+
+    // УРОВЕНЬ 2: Бизнес-класс
+    { id: "car_11", name: "Toyota Camry", price: 3500, income: 120, tier: "Бизнес-класс" },
+    { id: "car_12", name: "Kia K5", price: 5000, income: 180, tier: "Бизнес-класс" },
+    { id: "car_13", name: "Hyundai Sonata", price: 7000, income: 260, tier: "Бизнес-класс" },
+    { id: "car_14", name: "BMW 3 Series", price: 10000, income: 390, tier: "Бизнес-класс" },
+    { id: "car_15", name: "Mercedes-Benz C-Class", price: 15000, income: 600, tier: "Бизнес-класс" },
+    { id: "car_16", name: "Audi A4", price: 22000, income: 900, tier: "Бизнес-класс" },
+    { id: "car_17", name: "Lexus ES", price: 32000, income: 1350, tier: "Бизнес-класс" },
+    { id: "car_18", name: "Genesis G80", price: 45000, income: 2000, tier: "Бизнес-класс" },
+    { id: "car_19", name: "Volvo S90", price: 65000, income: 3000, tier: "Бизнес-класс" },
+    { id: "car_20", name: "Jaguar XF", price: 90000, income: 4300, tier: "Бизнес-класс" },
+
+    // УРОВЕНЬ 3: Премиум кроссоверы
+    { id: "car_21", name: "BMW X5", price: 130000, income: 6500, tier: "Премиум кроссоверы" },
+    { id: "car_22", name: "Mercedes-Benz GLE", price: 180000, income: 9300, tier: "Премиум кроссоверы" },
+    { id: "car_23", name: "Audi Q7", price: 250000, income: 13400, tier: "Премиум кроссоверы" },
+    { id: "car_24", name: "Porsche Cayenne", price: 350000, income: 19500, tier: "Премиум кроссоверы" },
+    { id: "car_25", name: "Range Rover Sport", price: 480000, income: 27500, tier: "Премиум кроссоверы" },
+    { id: "car_26", name: "Lexus LX 570", price: 650000, income: 38500, tier: "Премиум кроссоверы" },
+    { id: "car_27", name: "Cadillac Escalade", price: 850000, income: 52000, tier: "Премиум кроссоверы" },
+    { id: "car_28", name: "BMW X7", price: 1100000, income: 70000, tier: "Премиум кроссоверы" },
+    { id: "car_29", name: "Mercedes-Benz GLS", price: 1500000, income: 98000, tier: "Премиум кроссоверы" },
+    { id: "car_30", name: "Lamborghini Urus", price: 2100000, income: 140000, tier: "Премиум кроссоверы" },
+
+    // УРОВЕНЬ 4: Спорт и Люкс
+    { id: "car_31", name: "Porsche 911 Carrera", price: 2900000, income: 200000, tier: "Спорт и Люкс" },
+    { id: "car_32", name: "BMW M8 Coupe", price: 4000000, income: 285000, tier: "Спорт и Люкс" },
+    { id: "car_33", name: "Mercedes-AMG GT", price: 5500000, income: 400000, tier: "Спорт и Люкс" },
+    { id: "car_34", name: "Audi R8 V10", price: 7500000, income: 560000, tier: "Спорт и Люкс" },
+    { id: "car_35", name: "Bentley Continental GT", price: 10000000, income: 780000, tier: "Спорт и Люкс" },
+    { id: "car_36", name: "Aston Martin DBS", price: 14000000, income: 1120000, tier: "Спорт и Люкс" },
+    { id: "car_37", name: "Ferrari Roma", price: 19000000, income: 1550000, tier: "Спорт и Люкс" },
+    { id: "car_38", name: "Mclaren 720S", price: 26000000, income: 2180000, tier: "Спорт и Люкс" },
+    { id: "car_39", name: "Rolls-Royce Ghost", price: 35000000, income: 3000000, tier: "Спорт и Люкс" },
+    { id: "car_40", name: "Rolls-Royce Phantom", price: 48000000, income: 4200000, tier: "Спорт и Люкс" },
+
+    // УРОВЕНЬ 5: Гиперкары
+    { id: "car_41", name: "Ferrari SF90 Stradale", price: 65000000, income: 5900000, tier: "Гиперкары" },
+    { id: "car_42", name: "Lamborghini Aventador SVJ", price: 88000000, income: 8200000, tier: "Гиперкары" },
+    { id: "car_43", name: "Pagani Huayra", price: 120000000, income: 11500000, tier: "Гиперкары" },
+    { id: "car_44", name: "Bugatti Veyron", price: 165000000, income: 16200000, tier: "Гиперкары" },
+    { id: "car_45", name: "Koenigsegg Agera RS", price: 230000000, income: 23000000, tier: "Гиперкары" },
+    { id: "car_46", name: "Bugatti Chiron", price: 320000000, income: 32800000, tier: "Гиперкары" },
+    { id: "car_47", name: "McLaren Speedtail", price: 450000000, income: 47000000, tier: "Гиперкары" },
+    { id: "car_48", name: "Aston Martin Valkyrie", price: 630000000, income: 68000000, tier: "Гиперкары" },
+    { id: "car_49", name: "Bugatti La Voiture Noire", price: 900000000, income: 100000000, tier: "Гиперкары" },
+    { id: "car_50", name: "Космический Родстер Илона Маска", price: 1500000000, income: 180000000, tier: "Гиперкары" }
+];
+
+// Автоматическая сборка интерфейса гаража
+function initGarageDOM() {
+    const listEl = document.getElementById('garage-list');
+    listEl.innerHTML = '';
+    let currentTier = "";
+
+    CARS_DATABASE.forEach(car => {
+        if (car.tier !== currentTier) {
+            currentTier = car.tier;
+            const tierTitle = document.createElement('div');
+            tierTitle.className = 'car-tier-title';
+            tierTitle.innerText = `⭐ ${currentTier}`;
+            listEl.appendChild(tierTitle);
+        }
+
+        const row = document.createElement('div');
+                row.className = 'item-row';
+                row.innerHTML = `
+            <div>
+                <strong>${car.name}</strong><br>
+                <small>Доход: +$${car.income.toLocaleString()}/сек. Цена: $${car.price.toLocaleString()}</small>
+            </div>
+            <button id="buy-${car.id}" class="action-btn" onclick="buyCarItem('${car.id}', ${car.price}, '${car.name}', ${car.income})">Купить</button>
+        `;
+        listEl.appendChild(row);
+    });
+}
+
+// Функция для покупки машины
+function buyCarItem(id, price, name, incomePlus) {
+    if (gameState.balance >= price && !gameState.inventory.includes(id)) {
+        gameState.balance -= price;
+        gameState.inventory.push(id);
+        gameState.income += incomePlus;
+        log('Куплено авто: ' + name);
+        updateUI();
+    }
+ }
+   
         // Состояние игры (сохраняется в localStorage)
         let gameState = JSON.parse(localStorage.getItem('tg_life_sim_state')) || {
             balance: 100,
@@ -262,19 +391,19 @@ document.getElementById('buy-clinic').disabled = gameState.balance < 2500000;
 document.getElementById('buy-mall').disabled = gameState.balance < 10000000;
 
             
-            if (gameState.inventory.includes('bike')) {
-                document.getElementById('buy-bike').innerText = 'В гараже';
-                document.getElementById('buy-bike').disabled = true;
-            } else {
-                document.getElementById('buy-bike').disabled = gameState.balance < 30;
-            }
-
-            if (gameState.inventory.includes('car')) {
-                document.getElementById('buy-car').innerText = 'В гараже';
-                document.getElementById('buy-car').disabled = true;
-            } else {
-                document.getElementById('buy-car').disabled = gameState.balance < 150;
-            }
+    // Доступность кнопок в гараже
+CARS_DATABASE.forEach(car => {
+    const btn = document.getElementById(`buy-${car.id}`);
+    if (btn) {
+        if (gameState.inventory.includes(car.id)) {
+            btn.innerText = 'В гараже';
+            btn.disabled = true;
+        } else {
+            btn.innerText = 'Купить';
+            btn.disabled = gameState.balance < car.price;
+        }
+    }
+});
 
             localStorage.setItem('tg_life_sim_state', JSON.stringify(gameState));
         }
@@ -314,6 +443,8 @@ document.getElementById('buy-mall').disabled = gameState.balance < 10000000;
             event.currentTarget.classList.add('active');
         }
 
+              // ... здесь у вас заканчиваются другие функции (buyCarItem, switchTab и т.д.) ...
+
         // Каждую секунду начисляем доход
         setInterval(() => {
             if (gameState.income > 0) {
@@ -322,8 +453,10 @@ document.getElementById('buy-mall').disabled = gameState.balance < 10000000;
             }
         }, 1000);
 
-        // Первый запуск интерфейса
-        updateUI();
+        // ВОТ СЮДА ВСТАВЛЯЙТЕ ЭТИ СТРОЧКИ (в самый низ файла):
+        initGarageDOM();
+        updateUI(); 
     </script>
 </body>
 </html>
+
